@@ -2758,6 +2758,7 @@ function vEngines() {
   return `${head('Put it to work', 'Domain engines', 'A domain engine is a ready-made team for one part of the business. It knows the rules, does the legwork and proposes decisions. People approve what matters.')}
   <div class="eng-grid">${ENGINES.map(x => `<button class="eng eng2${x.id === S.engine ? ' active' : ''}" type="button" data-engine-pick="${x.id}"><span class="big-ic b0">${ic(ENG_IC[x.id] || 'cpu', 22)}</span><b>${x.name}</b><span class="pill blue plain">${(S.co === 'myzoi' && x.kpiMz) || x.kpi}</span><div class="eng-stats"><span><strong>${x.agents}</strong> agents</span><span><strong>${x.dec}</strong> proposals today</span></div></button>`).join('')}</div>
   <div class="card"><div class="card-h"><h2>Watch a case: ${ecase(e).title}</h2><button class="btn sm primary" type="button" data-play>${ic('play', 12)}${S.caseStep >= ecase(e).steps.length ? 'Replay' : S.playing ? 'Playing…' : 'Play'}</button></div><div class="card-b"><div id="timeline">${caseSteps(e)}</div></div></div>
+  ${e.id === 'fincrime' ? sigBoard() : ''}
   <div class="card"><div class="card-h"><h2>Inside the ${e.name.toLowerCase()} engine</h2><span class="sub">What it knows, who does the work, what it may decide</span></div><div class="card-b">
     <div class="inside">
       <div class="in-t"><span class="kic blue">${ic('book', 17)}</span><b>What it knows</b><div class="books">${pack.map(p => `<span class="bk">${ic('doc', 12)}<span>${p}</span></span>`).join('')}</div></div>
@@ -5149,7 +5150,7 @@ function brkRun(k) { clearTimeout(brkRun.h); S.brk = {fault: k, at: -1}; const f
 
 /* ---------- extra engineering cards on existing pages ---------- */
 function engMore(route) {
-  if (route === 'engines') return engAnatomy() + (S.engine === 'fincrime' ? sigBoard() : '');
+  if (route === 'engines') return engAnatomy();
   if (route === 'ontology') return gxCard();
   if (route === 'quality') return brkCard();
   return '';
@@ -5354,7 +5355,7 @@ document.addEventListener('click', e => {
   else if (x === 'tx') { S.sigSel = a; rr(); }
   else if (x === 'aml') { S.amlSel = a; rr(); }
   else if (x === 'stream') streamSig();
-  else if (x === 'toGraph') { S.gx = {start: 'DEV', hops: 2, role: 'inv', sel: 'DEV', refused: false}; go('ontology'); }
+  else if (x === 'toGraph') { S.gx = {start: 'DEV', hops: 2, role: 'inv', sel: 'DEV', refused: false}; if (!S.eng) { setEng(true); toast('Engineering view on: the graph explorer is an engineering panel'); } go('ontology'); }
   else if (x === 'gstart') { S.gx.start = a; S.gx.sel = null; rr(); }
   else if (x === 'ghops') { if (+a > 4) S.gx.refused = true; else { S.gx.refused = false; S.gx.hops = +a; } rr(); }
   else if (x === 'grole') { S.gx.role = a; S.gx.sel = null; rr(); }
