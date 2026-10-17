@@ -1939,6 +1939,17 @@ button.xli:hover { border-color: var(--royal-200); }
 @media (max-width: 1200px) { .xk.xk4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 1000px) { .xvgrid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 700px) { .xpr2 { grid-template-columns: minmax(0, 1fr) 60px; } .xpr2 .tr { grid-column: 1 / -1; grid-row: 2; } .xfun.wide .xf { grid-template-columns: minmax(0, 1fr) 70px; } .xfun.wide .xf .tr { grid-column: 1 / -1; grid-row: 2; } .xdc { grid-template-columns: 4px minmax(0, 1fr); } .xdc > .btn { grid-column: 2; justify-self: start; } }
+/* v19: no filled highlight boxes anywhere. Tiles that were solid blue now look like every other box, in both themes */
+.kpi.accent, html.dk .kpi.accent, .xo.accent, html.dk .xo.accent, .stage.dark, html.dk .stage.dark, .lf.dark, html.dk .lf.dark, .anat-base, html.dk .anat-base, .base2, html.dk .base2 { background: var(--surface); border: 1px solid var(--line); color: var(--ink); }
+.kpi.accent .k, .kpi.accent .d, html.dk .kpi.accent .k, html.dk .kpi.accent .d, .xo.accent small, .xo.accent span, html.dk .xo.accent small, html.dk .xo.accent span { color: var(--muted); }
+.kpi.accent .v, .xo.accent b, html.dk .kpi.accent .v, html.dk .xo.accent b { color: var(--ink); }
+.xk .kpi.accent .up { color: var(--good); }
+.stage.dark .s-n, html.dk .stage.dark .s-n { color: var(--royal); }
+.stage.dark .s-t, .stage.dark .s-v, html.dk .stage.dark .s-t, html.dk .stage.dark .s-v { color: var(--ink); }
+.stage.dark .s-d, .stage.dark .s-v em, html.dk .stage.dark .s-d, html.dk .stage.dark .s-v em { color: var(--muted); }
+.lf.dark small, html.dk .lf.dark small { color: var(--royal); }
+.lf.dark b, html.dk .lf.dark b { color: var(--ink); }
+.lf.dark span, html.dk .lf.dark span, .anat-base span, html.dk .anat-base span, .base2 span, html.dk .base2 span { color: var(--muted); }
 </style>
 <div class="app">
   <aside class="rail">
