@@ -1759,6 +1759,133 @@ button.live:hover { border-color: var(--royal); color: var(--ink); }
 @media (max-width: 480px) { #liveText { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .live { padding: 7px 9px; } .live-ic { padding-left: 6px; } }
 </style>
 
+<style>
+/* ---------- v17: executive views (CEO, CTO, value calculator) ---------- */
+.xk { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.xk .kpi { cursor: pointer; transition: border-color .15s, transform .15s; text-align: left; }
+.xk .kpi:hover { border-color: var(--royal-200); transform: translateY(-2px); }
+.xk .kpi .d { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.xk .kpi .up { color: var(--good); font-weight: 800; }
+.xk .kpi.accent .up { color: #fff; }
+.xp .xv { white-space: nowrap; }
+.x2 { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; }
+.x2e { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.xcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); min-width: 0; display: grid; grid-template-rows: auto 1fr; }
+.xcard-h { display: flex; align-items: center; gap: 10px; padding: 16px 18px 6px; flex-wrap: wrap; }
+.xcard-h h2 { font-size: 16px; }
+.xcard-h .sub { margin-left: auto; }
+.xcard-b { padding: 8px 18px 18px; min-width: 0; }
+.xseg { display: inline-flex; gap: 3px; background: var(--sunken); border-radius: 10px; padding: 3px; }
+.xseg button { border: 0; background: none; border-radius: 7px; padding: 5px 11px; font-size: 12px; font-weight: 800; color: var(--ink2); }
+.xseg button.on { background: var(--surface); color: var(--royal-d); box-shadow: 0 1px 3px rgba(13,21,48,.12); }
+.xchart { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--sans); }
+.xchart .gl { stroke: var(--line); stroke-width: 1; }
+.xchart .ax { font-size: 11px; fill: var(--muted); font-weight: 600; }
+.xchart .hit { fill: transparent; cursor: crosshair; }
+.xchart .hit:hover { fill: var(--royal-50); fill-opacity: .55; }
+.xchart .bar { transition: opacity .15s; }
+.xchart .lbl { font-size: 11px; font-weight: 800; fill: var(--ink2); }
+.xleg { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); font-weight: 700; margin-top: 8px; }
+.xleg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+#view.enter .xchart .bar { transform-box: fill-box; transform-origin: bottom; animation: xgrow .9s .2s cubic-bezier(.2,.7,.2,1) both; }
+#view.enter .xchart .hbarx { transform-box: fill-box; transform-origin: left; animation: xgrowx .9s .2s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes xgrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes xgrowx { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.xprog { display: grid; gap: 8px; }
+.xp { display: grid; grid-template-columns: 34px minmax(0, 1.3fr) 84px minmax(0, 1fr) 128px 170px 16px; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); text-align: left; width: 100%; transition: border-color .15s, transform .15s; }
+.xp:hover { border-color: var(--royal-200); transform: translateX(2px); }
+.xp .xic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--royal-50); color: var(--royal); }
+.xp.live .xic { background: var(--royal); color: #fff; }
+.xp b { font-size: 13.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xp small { font-size: 12px; color: var(--muted); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xp .xv { font-size: 13px; font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
+.xp .xv small { font-weight: 600; text-align: right; }
+.xbarline { display: block; height: 8px; border-radius: 999px; background: var(--sunken); overflow: hidden; }
+.xbarline i { display: block; height: 8px; border-radius: 999px; background: var(--fill); }
+#view.enter .xbarline i { transform-origin: left; animation: xgrowx 1s .3s cubic-bezier(.2,.7,.2,1) both; }
+.xst { font-size: 11px; font-weight: 800; border-radius: 999px; padding: 3px 9px; text-align: center; white-space: nowrap; }
+.xst.Live { color: #fff; background: var(--royal); }
+.xst.Pilot { color: var(--royal-d); background: var(--royal-100); }
+.xst.Build { color: var(--warn); background: var(--warn-bg); }
+.xst.Design { color: var(--unk); background: var(--unk-bg); }
+.xst.Planned { color: var(--muted); background: var(--sunken); }
+.xgauge { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 18px; align-items: center; }
+.xgauge .ring-t { font-size: 30px; font-weight: 800; fill: var(--ink); font-family: var(--sans); }
+.xgauge .ring-s { font-size: 11px; font-weight: 700; fill: var(--muted); font-family: var(--sans); }
+.xrows { display: grid; gap: 8px; }
+.xrow { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 13px; padding: 6px 8px; border-radius: 9px; border: 0; background: none; text-align: left; width: 100%; }
+.xrow:hover { background: var(--sunken); }
+.xrow i { width: 10px; height: 10px; border-radius: 3px; }
+.xrow strong { font-variant-numeric: tabular-nums; }
+.xfun { display: grid; gap: 7px; }
+.xf { display: grid; grid-template-columns: 120px minmax(0, 1fr) 56px; gap: 10px; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--ink2); border: 0; background: none; padding: 2px 0; text-align: left; width: 100%; }
+.xf .tr { display: block; height: 26px; border-radius: 8px; background: var(--sunken); overflow: hidden; }
+.xf .tr i { display: block; height: 26px; border-radius: 8px; background: linear-gradient(90deg, var(--royal), var(--royal-200)); }
+.xf:hover .tr i { filter: brightness(1.08); }
+.xf .n { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+#view.enter .xf .tr i { transform-origin: left; animation: xgrowx 1s .25s cubic-bezier(.2,.7,.2,1) both; }
+.xdec { display: grid; gap: 8px; }
+.xmini { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.xmini > div { border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; display: grid; gap: 1px; }
+.xmini small { font-size: 11px; font-weight: 700; color: var(--muted); }
+.xmini b { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.xsrc { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.xs { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; background: var(--surface); text-align: left; transition: border-color .15s; min-width: 0; }
+.xs:hover { border-color: var(--royal-200); }
+.xs-h { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.xs-h b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xs-h i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.xs-h i.ok { background: var(--good); box-shadow: 0 0 0 3px var(--good-bg); }
+.xs-h i.warn { background: #E2A23B; box-shadow: 0 0 0 3px var(--warn-bg); }
+.xs-h i.bad { background: var(--bad); box-shadow: 0 0 0 3px var(--bad-bg); }
+.xs-h i.unk { background: var(--unk); box-shadow: 0 0 0 3px var(--unk-bg); }
+.xs-f { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); font-weight: 700; }
+.xgantt { display: grid; gap: 6px; min-width: 760px; }
+.xg-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--ink2); border: 0; background: none; padding: 0; text-align: left; width: 100%; }
+.xg-row > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xg-tr { position: relative; height: 26px; background: repeating-linear-gradient(90deg, var(--sunken) 0, var(--sunken) calc(6.25% - 1px), var(--line) calc(6.25% - 1px), var(--line) 6.25%); border-radius: 7px; }
+.xg-bar { position: absolute; top: 4px; bottom: 4px; border-radius: 6px; font-size: 10.5px; font-weight: 800; color: #fff; display: flex; align-items: center; padding: 0 8px; white-space: nowrap; overflow: hidden; }
+.xg-row:hover .xg-bar { filter: brightness(1.1); }
+.xg-now { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--bad); border-radius: 2px; }
+.xg-head { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 12px; font-size: 11px; font-weight: 800; color: var(--muted); }
+.xg-head div { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); }
+.xcalc { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.xproc { display: grid; gap: 6px; }
+.xpr { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(120px, 1.1fr) 70px; gap: 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 11px; font-size: 13px; }
+.xpr.off { opacity: .45; }
+.xpr .tg { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--line2); background: var(--surface); display: grid; place-items: center; padding: 0; color: #fff; }
+.xpr .tg.on { background: var(--royal); border-color: var(--royal); }
+.xpr b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xpr .hv { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+.xpr input[type=range], .xsl input[type=range] { width: 100%; accent-color: var(--royal); }
+.xsl { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+.xsl-h { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; font-weight: 700; color: var(--ink2); }
+.xsl-h strong { font-size: 18px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+.xout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.xo { border-radius: 14px; padding: 16px; display: grid; gap: 2px; border: 1px solid var(--line); background: var(--surface); }
+.xo.accent { background: var(--fill); border-color: var(--fill); }
+.xo small { font-size: 12px; font-weight: 700; color: var(--muted); }
+.xo.accent small, .xo.accent span { color: #CBD6FF; }
+.xo b { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.xo.accent b { color: #fff; }
+.xo span { font-size: 12px; color: var(--muted); }
+.xcmp { display: grid; gap: 8px; }
+.xcmp .row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 90px; gap: 10px; align-items: center; font-size: 12.5px; font-weight: 700; }
+.xcmp .tr { height: 22px; border-radius: 7px; background: var(--sunken); overflow: hidden; }
+.xcmp .tr i { display: block; height: 22px; border-radius: 7px; transition: width .35s cubic-bezier(.2,.7,.2,1); }
+.xcmp .v { text-align: right; font-variant-numeric: tabular-nums; }
+.xnote { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.xstep { display: flex; gap: 4px; }
+.xstep span { flex: 1; text-align: center; font-size: 11px; font-weight: 800; padding: 6px 4px; border-radius: 8px; background: var(--sunken); color: var(--faint); }
+.xstep span.done { background: var(--royal-100); color: var(--royal-d); }
+.xstep span.now { background: var(--royal); color: #fff; }
+.xlive { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: var(--good); }
+.xlive i { width: 6px; height: 6px; border-radius: 50%; background: var(--good); animation: pulse 2s infinite; }
+html.paused .xlive i { animation: none; }
+@media (max-width: 1200px) { .xk { grid-template-columns: repeat(3, minmax(0, 1fr)); } .xp { grid-template-columns: 34px minmax(0, 1fr) 84px 110px 16px; } .xp .xbarline, .xp .xsp { display: none; } }
+@media (max-width: 1000px) { .x2, .x2e, .xcalc { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 700px) { .xk { grid-template-columns: repeat(2, minmax(0, 1fr)); } .xgauge { grid-template-columns: minmax(0, 1fr); justify-items: center; } .xpr { grid-template-columns: 26px minmax(0, 1fr) 60px; } .xpr input { grid-column: 1 / -1; } .xout { grid-template-columns: minmax(0, 1fr); } }
+</style>
 <div class="app">
   <aside class="rail">
     <div class="brand">
@@ -5513,6 +5640,272 @@ setInterval(() => {
   if (rnd() < .55) { const f = FEED[fi++ % FEED.length]; if (!(S.stopped && f[0] === 'Gateway')) bump(f); }
 }, 2400);
 
+/* ---------- v17: executive views. Additive: a new "Executive" menu group with a CEO view, a CTO view and a value calculator. Nothing above changes. ---------- */
+I.xceo = '<path d="M3 20h18M5 20V10M10 20V4M15 20v-7M20 20v-11"/>';
+I.xcto = '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 12l2.5-3 2.5 2 3-4 2 2"/>';
+I.xcalc = '<rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8 6.5h8M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h3.5"/>';
+I.xbolt = '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>';
+I.xusers = I.users; I.xshield = I.shield;
+
+NAV.unshift(['Executive', [['ceo', 'CEO view', 'xceo'], ['cto', 'CTO view', 'xcto'], ['value', 'Value calculator', 'xcalc']]]);
+Object.assign(TITLES, {ceo: 'CEO view', cto: 'CTO view', value: 'Value calculator'});
+Object.assign(PAGE_DESC, {ceo: 'Value, programmes, growth and decisions at a glance', cto: 'Platform health, Glass in operation, AI cost, reuse and delivery', value: 'Work out the hours and money Glass gives back'});
+Object.assign(NAV_ICON, {ceo: 'xceo', cto: 'xcto', value: 'xcalc'});
+
+const XMZ = () => S.co === 'myzoi';
+const xcur = v => (XMZ() ? 'AED ' : '$') + fmt(Math.round(v));
+const xk = v => { const a = Math.abs(v); return a >= 1e6 ? (v / 1e6).toFixed(a >= 1e7 ? 0 : 1) + 'M' : a >= 1e3 ? (v / 1e3).toFixed(a >= 1e4 ? 0 : 1) + 'k' : String(Math.round(v)); };
+const xmoney = v => (XMZ() ? 'AED ' : '$') + xk(v);
+const MONTHS = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+const XC = ['var(--royal)', '#3AA0E8', '#16B39A', '#E2A23B', '#8B6CF6', '#E5687A'];
+
+/* Programmes built on Glass: one list per company, all synthetic. */
+const XPROG = {
+  myzoi: [
+    {id: 'reg', n: 'Reg change autopilot', st: 'Live', p: 100, ic: 'shield', owner: 'Head of Compliance', start: 0, end: 3, hrs: 160, metric: ['Review time', '80 h → 6 min'], trend: [80, 80, 76, 40, 12, 6, 6, 6, 6, 6, 6, 6], tu: 'hours per review', reuse: 0, go: 'engines', eng: 'compliance', risk: 'Two answers a month still go to a person. That is by design.'},
+    {id: 'partner', n: 'Partner launch checker', st: 'Pilot', p: 78, ic: 'link', owner: 'Head of Partnerships', start: 2, end: 6, hrs: 120, metric: ['Time to live', '41 → 19 days'], trend: [41, 41, 40, 38, 35, 31, 28, 25, 23, 21, 20, 19], tu: 'days to go live', reuse: 46, go: 'governance', risk: 'Waiting on one partner’s due-diligence pack.'},
+    {id: 'employer', n: 'Employer onboarding autopilot', st: 'Pilot', p: 64, ic: 'building', owner: 'Head of Sales Operations', start: 3, end: 7, hrs: 140, metric: ['Signed to first payroll', '12 → 5 days'], trend: [12, 12, 12, 11, 10, 9, 8, 7, 6, 6, 5, 5], tu: 'days to first payroll', reuse: 61, go: 'sources', risk: 'WPS file formats vary by payroll provider.'},
+    {id: 'payroll', n: 'Payroll exception watch', st: 'Build', p: 45, ic: 'clock', owner: 'Head of Operations', start: 4, end: 8, hrs: 110, metric: ['Failed credits caught', '94% before payday'], trend: [0, 0, 0, 0, 20, 41, 58, 70, 79, 86, 91, 94], tu: '% caught before payday', reuse: 72, go: 'quality', risk: 'Needs a daily feed from the salary bank.'},
+    {id: 'complaints', n: 'Complaint assistant', st: 'Build', p: 38, ic: 'msg', owner: 'Head of Customer Care', start: 5, end: 8, hrs: 90, metric: ['On-time replies', '86% → 98%'], trend: [86, 86, 87, 86, 88, 90, 92, 94, 95, 96, 97, 98], tu: '% answered on time', reuse: 74, go: 'engines', eng: 'complaints', risk: 'Arabic, Hindi and Tagalog drafts need a reviewer sign-off.'},
+    {id: 'fraud', n: 'Fraud and mule detection', st: 'Design', p: 18, ic: 'search', owner: 'MLRO', start: 6, end: 10, hrs: 100, metric: ['Alerts to review', '−38% false positives'], trend: [100, 100, 100, 100, 100, 100, 98, 92, 84, 75, 68, 62], tu: 'alert index', reuse: 78, go: 'engines', eng: 'fincrime', risk: 'Raises signals for an investigator; never blocks money on its own.'},
+    {id: 'safeguard', n: 'Safeguarding reconciler', st: 'Planned', p: 6, ic: 'lock', owner: 'Head of Finance', start: 7, end: 10, hrs: 60, metric: ['Float matched', 'Daily, not monthly'], trend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tu: 'planned', reuse: 81, go: 'engines', eng: 'recon', risk: 'Needs read access to the safeguarding account statements.'},
+    {id: 'investor', n: 'Investor-ready metrics', st: 'Planned', p: 4, ic: 'xceo', owner: 'CFO', start: 8, end: 10, hrs: 40, metric: ['Board pack', 'Days → hours'], trend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tu: 'planned', reuse: 84, go: 'semantic', risk: 'Each metric needs a named owner first.'},
+  ],
+  halden: [
+    {id: 'reg', n: 'Regulatory change', st: 'Live', p: 100, ic: 'shield', owner: 'Chief Compliance Officer', start: 0, end: 3, hrs: 150, metric: ['Review time', '75 h → 6 min'], trend: [75, 75, 70, 38, 12, 6, 6, 6, 6, 6, 6, 6], tu: 'hours per review', reuse: 0, go: 'engines', eng: 'compliance', risk: 'People still decide the uncertain answers.'},
+    {id: 'complaints', n: 'Complaints resolution', st: 'Live', p: 100, ic: 'msg', owner: 'Complaints Team Lead', start: 1, end: 4, hrs: 130, metric: ['On-time replies', '84% → 97%'], trend: [84, 84, 85, 88, 91, 93, 95, 96, 96, 97, 97, 97], tu: '% answered on time', reuse: 38, go: 'engines', eng: 'complaints', risk: 'Refunds above the limit wait for the team lead.'},
+    {id: 'recon', n: 'Settlement reconciliation', st: 'Pilot', p: 72, ic: 'swap', owner: 'Financial Controller', start: 3, end: 6, hrs: 120, metric: ['Breaks found', 'Same day, not month end'], trend: [30, 30, 29, 27, 22, 16, 11, 8, 6, 4, 3, 2], tu: 'days to find a break', reuse: 55, go: 'engines', eng: 'recon', risk: 'Two acquirers send files late.'},
+    {id: 'merchant', n: 'Merchant onboarding', st: 'Pilot', p: 60, ic: 'store', owner: 'Head of Sales Operations', start: 4, end: 7, hrs: 110, metric: ['Time to live', '21 → 8 days'], trend: [21, 21, 21, 20, 18, 15, 13, 11, 10, 9, 8, 8], tu: 'days to go live', reuse: 63, go: 'sources', risk: 'Beneficial-owner checks depend on a registry API.'},
+    {id: 'fincrime', n: 'Fincrime triage', st: 'Build', p: 42, ic: 'search', owner: 'MLRO', start: 5, end: 8, hrs: 100, metric: ['False positives', '−35%'], trend: [100, 100, 100, 100, 100, 97, 92, 85, 78, 72, 68, 65], tu: 'alert index', reuse: 71, go: 'engines', eng: 'fincrime', risk: 'Signals only: an investigator makes every decision.'},
+    {id: 'kyc', n: 'KYC refresh', st: 'Design', p: 15, ic: 'badge', owner: 'Head of Onboarding', start: 6, end: 9, hrs: 90, metric: ['Renewals chased', 'Automatic'], trend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tu: 'designing', reuse: 77, go: 'quality', risk: 'Vendor renamed a field; mapping awaits approval.'},
+    {id: 'board', n: 'Board reporting', st: 'Planned', p: 5, ic: 'xceo', owner: 'CFO', start: 8, end: 10, hrs: 40, metric: ['Board pack', 'Days → hours'], trend: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], tu: 'planned', reuse: 83, go: 'semantic', risk: 'Each metric needs a named owner first.'},
+  ],
+};
+const XTL = {"myzoi": {"reg": [0, 3], "partner": [2, 13], "employer": [3, 13], "payroll": [6, 14], "complaints": [7, 14], "fraud": [10, 16], "safeguard": [12, 16], "investor": [13, 16]}, "halden": {"reg": [0, 3], "complaints": [1, 4], "recon": [3, 13], "merchant": [4, 13], "fincrime": [6, 14], "kyc": [10, 15], "board": [13, 16]}};
+const xprogs = () => XPROG[XMZ() ? 'myzoi' : 'halden'];
+const XORDER = ['Live', 'Pilot', 'Build', 'Design', 'Planned'];
+const XFTE = 160;
+
+/* Monthly hours given back: each programme starts paying when it reaches pilot. */
+function xHours() {
+  return MONTHS.map((_, m) => xprogs().reduce((a, p) => {
+    if (p.st === 'Planned' || p.st === 'Design') return a;
+    const goLive = p.start + 2; if (m < goLive) return a;
+    const ramp = Math.min(1, (m - goLive + 1) / 3) * (p.st === 'Live' ? 1 : p.st === 'Pilot' ? .7 : .35);
+    return a + p.hrs * ramp;
+  }, 0)).map(v => Math.round(v));
+}
+
+/* state */
+S.x = S.x || {range: 12, rate: null, share: 85, procs: null};
+const XPROC = {
+  myzoi: [['Regulatory change', 80], ['Employer onboarding', 120], ['Partner activation', 90], ['Payroll and WPS exceptions', 140], ['Remittance checks', 100], ['KYC refresh', 110], ['Complaints', 90], ['Safeguarding', 60], ['Board and investor packs', 40], ['Audit evidence', 60]],
+  halden: [['Regulatory change', 75], ['Merchant onboarding', 110], ['Complaints', 130], ['Settlement reconciliation', 120], ['Fincrime triage', 100], ['KYC refresh', 90], ['Disputes', 80], ['Vendor reviews', 50], ['Board reporting', 40], ['Audit evidence', 60]],
+};
+function xCalc() {
+  const k = XMZ() ? 'myzoi' : 'halden';
+  if (!S.x.procs || S.x.procsCo !== k) { S.x.procs = XPROC[k].map(([n, h]) => ({n, h, on: true})); S.x.procsCo = k; S.x.rate = XMZ() ? 120 : 45; }
+  const on = S.x.procs.filter(p => p.on), today = on.reduce((a, p) => a + p.h, 0), back = today * S.x.share / 100;
+  return {today, back, left: today - back, fte: back / XFTE, month: back * S.x.rate, year: back * S.x.rate * 12};
+}
+
+/* ---------- small chart kit: SVG, hover tooltips through the existing data-tip, drawn on enter ---------- */
+function xBars(labels, sets, o = {}) {
+  const W = o.w || 640, H = o.h || 220, P = {l: 40, r: 10, t: 12, b: 26}, iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const stacked = o.stack, n = labels.length;
+  const tot = labels.map((_, i) => stacked ? sets.reduce((a, s) => a + s.v[i], 0) : Math.max(...sets.map(s => s.v[i])));
+  const lineMax = o.line ? Math.max(...o.line.v) : 0, max = Math.max(1, ...tot) * 1.12, lmax = Math.max(1, lineMax) * 1.12;
+  const bw = iw / n, gx = i => P.l + i * bw, y = v => P.t + ih - v / max * ih;
+  let g = '';
+  for (let k = 0; k <= 3; k++) { const v = max / 1.12 * k / 3, yy = y(v); g += `<line class="gl" x1="${P.l}" x2="${W - P.r}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}"/><text class="ax" x="${P.l - 6}" y="${(yy + 4).toFixed(1)}" text-anchor="end">${o.fmtA ? o.fmtA(v) : xk(v)}</text>`; }
+  labels.forEach((lb, i) => {
+    let acc = 0;
+    sets.forEach((s, j) => {
+      const v = s.v[i]; if (!v) return;
+      const x = gx(i) + (stacked ? bw * .2 : bw * .2 + j * bw * .6 / sets.length), w = stacked ? bw * .6 : bw * .6 / sets.length;
+      const y0 = stacked ? y(acc + v) : y(v), h = (stacked ? y(acc) : y(0)) - y0; acc += v;
+      g += `<rect class="bar" x="${x.toFixed(1)}" y="${y0.toFixed(1)}" width="${Math.max(1, w - 1).toFixed(1)}" height="${Math.max(0, h).toFixed(1)}" rx="3" fill="${s.c}" style="animation-delay:${(.15 + i * .04).toFixed(2)}s"/>`;
+    });
+    if (n <= 14 || i % 2 === 0) g += `<text class="ax" x="${(gx(i) + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${lb}</text>`;
+  });
+  if (o.line) {
+    const pts = o.line.v.map((v, i) => [gx(i) + bw / 2, P.t + ih - v / lmax * ih]);
+    g += `<path class="spk" pathLength="1" d="M${pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L')}" fill="none" stroke="${o.line.c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach(p => { g += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="var(--surface)" stroke="${o.line.c}" stroke-width="2"/>`; });
+  }
+  labels.forEach((lb, i) => {
+    const tip = `${lb}|${sets.map(s => `${s.n}: ${o.fmt ? o.fmt(s.v[i]) : fmt(s.v[i])}`).join(' · ')}${o.line ? ` · ${o.line.n}: ${o.lfmt ? o.lfmt(o.line.v[i]) : fmt(o.line.v[i])}` : ''}`;
+    g += `<rect class="hit" x="${gx(i).toFixed(1)}" y="${P.t}" width="${bw.toFixed(1)}" height="${ih}" data-tip="${esc(tip)}"/>`;
+  });
+  return `<svg class="xchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.alt || 'Chart')}">${g}</svg>`;
+}
+function xLines(labels, sets, o = {}) {
+  const W = o.w || 640, H = o.h || 220, P = {l: 40, r: 12, t: 12, b: 26}, iw = W - P.l - P.r, ih = H - P.t - P.b, n = labels.length;
+  const all = sets.flatMap(s => s.v), min = o.min != null ? o.min : Math.min(...all) * .92, max = Math.max(...all) * 1.06;
+  const x = i => P.l + i * iw / (n - 1), y = v => P.t + ih - (v - min) / (max - min || 1) * ih;
+  let g = '';
+  for (let k = 0; k <= 3; k++) { const v = min + (max - min) * k / 3, yy = y(v); g += `<line class="gl" x1="${P.l}" x2="${W - P.r}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}"/><text class="ax" x="${P.l - 6}" y="${(yy + 4).toFixed(1)}" text-anchor="end">${o.fmtA ? o.fmtA(v) : xk(v)}</text>`; }
+  labels.forEach((lb, i) => { if (n <= 14 || i % 2 === 0) g += `<text class="ax" x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle">${lb}</text>`; });
+  sets.forEach(s => {
+    const pts = s.v.map((v, i) => [x(i), y(v)]), d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+    if (s.fill) g += `<path d="${d} L${pts[n - 1][0].toFixed(1)} ${P.t + ih} L${pts[0][0].toFixed(1)} ${P.t + ih} Z" fill="${s.c}" fill-opacity=".1"/>`;
+    g += `<path class="spk" pathLength="1" d="${d}" fill="none" stroke="${s.c}" stroke-width="${s.dash ? 2 : 2.6}" ${s.dash ? 'stroke-dasharray="6 6"' : ''} stroke-linejoin="round" stroke-linecap="round"/>`;
+    const e = pts[n - 1]; g += `<circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="4" fill="${s.c}"/>`;
+  });
+  labels.forEach((lb, i) => { const tip = `${lb}|${sets.map(s => `${s.n}: ${o.fmt ? o.fmt(s.v[i], s) : fmt(s.v[i])}`).join(' · ')}`; g += `<rect class="hit" x="${(x(i) - iw / (n - 1) / 2).toFixed(1)}" y="${P.t}" width="${(iw / (n - 1)).toFixed(1)}" height="${ih}" data-tip="${esc(tip)}"/>`; });
+  return `<svg class="xchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.alt || 'Chart')}">${g}</svg>`;
+}
+function xRing(parts, label, sub) {
+  const R = 64, C = 2 * Math.PI * R, tot = parts.reduce((a, p) => a + p[1], 0); let off = 0;
+  const arcs = parts.map(([n, v, c]) => { const len = v / tot * C, s = `<circle cx="85" cy="85" r="${R}" fill="none" stroke="${c}" stroke-width="18" stroke-dasharray="${len.toFixed(1)} ${(C - len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 85 85)" data-tip="${esc(n)}|${fmt(v)} (${Math.round(v / tot * 100)}%)" style="cursor:pointer"/>`; off += len; return s; }).join('');
+  return `<svg viewBox="0 0 170 170" width="170" height="170" role="img" aria-label="${esc(label + ' ' + sub)}"><circle cx="85" cy="85" r="${R}" fill="none" stroke="var(--sunken)" stroke-width="18"/>${arcs}<text class="ring-t" x="85" y="88" text-anchor="middle">${label}</text><text class="ring-s" x="85" y="108" text-anchor="middle">${sub}</text></svg>`;
+}
+const xKpi = (k, v, d, opt = {}) => `<button class="kpi${opt.accent ? ' accent' : ''}" type="button" ${opt.go ? `data-go="${opt.go}"` : opt.x ? `data-x="${opt.x}"` : ''}${opt.tip ? ` data-tip="${esc(opt.tip)}"` : ''}><span class="k">${k}</span><span class="v"${opt.id ? ` id="${opt.id}"` : ''}>${v}</span><span class="d">${d}</span></button>`;
+const xCard = (title, sub, body, extra = '') => `<div class="xcard"><div class="xcard-h"><h2>${title}</h2>${extra}${sub ? `<span class="sub">${sub}</span>` : ''}</div><div class="xcard-b">${body}</div></div>`;
+const xRange = () => `<div class="xseg" role="group" aria-label="Range">${[[3, '3M'], [6, '6M'], [12, '12M']].map(([v, t]) => `<button type="button" class="${S.x.range === v ? 'on' : ''}" data-xrange="${v}">${t}</button>`).join('')}</div>`;
+const xSlice = a => a.slice(-S.x.range);
+
+/* ---------- CEO view ---------- */
+function vCEO() {
+  const P = xprogs(), hrs = xHours(), cum = hrs.reduce((a, v, i) => (a.push((a[i - 1] || 0) + v), a), []), c = xCalc();
+  const nowH = hrs[hrs.length - 1], prevH = hrs[hrs.length - 2] || 1, live = P.filter(p => p.st === 'Live').length, pilot = P.filter(p => p.st === 'Pilot').length;
+  const cost = nowH * S.x.rate, grow = XMZ() ? {a: 'Active users', a0: 150, a1: 214, b: 'Employers', b0: 700, b1: 942, t0: 118, t1: 121} : {a: 'Active customers', a0: 280, a1: 352, b: 'Merchants', b0: 4100, b1: 5600, t0: 210, t1: 214};
+  const gA = MONTHS.map((_, i) => +(100 * (1 + (grow.a1 / grow.a0 - 1) * Math.pow(i / 11, 1.15))).toFixed(1));
+  const gB = MONTHS.map((_, i) => +(100 * (1 + (grow.b1 / grow.b0 - 1) * Math.pow(i / 11, 1.05))).toFixed(1));
+  const gT = MONTHS.map((_, i) => +(100 * (1 + (grow.t1 / grow.t0 - 1) * i / 11)).toFixed(1));
+  const gTip = (v, s) => s.n === 'Team' ? `${Math.round(grow.t0 * v / 100)} people` : s.n === grow.a ? `${Math.round(grow.a0 * v / 100)}k` : fmt(Math.round(grow.b0 * v / 100));
+  const fun = XMZ() ? [['Signed', 46], ['Due diligence', 38], ['Rules mapped', 31], ['Set up and tested', 24], ['Go-live sign-off', 19], ['Live', 17]] : [['Signed', 64], ['Due diligence', 55], ['Rules mapped', 47], ['Set up and tested', 38], ['Go-live sign-off', 31], ['Live', 29]];
+  const ttl = XMZ() ? [41, 40, 38, 35, 33, 31, 28, 25, 23, 21, 20, 19] : [21, 21, 20, 19, 18, 16, 14, 12, 11, 10, 9, 8];
+  const comp = [['Still valid', 238, 'var(--royal)'], ['Under review', 31, '#E2A23B'], ['No longer valid', 6, 'var(--bad)'], ['Evidence needed', 23, 'var(--unk)']];
+  const dec = XMZ() ? [['warn', 'Approve go-live: remittance partner', 'Evidence complete · waiting for you', 'governance'], ['bad', 'Article 8 gap: complaint records kept 3 years', 'Standard asks for 5 · fix drafted', 'engines', 'compliance'], ['blue', 'Fund the next tool', 'Fraud and mule detection · 78% reuse', 'x:prog:fraud'], ['warn', `${S.approvals} decisions with named owners`, 'Across all teams · none overdue', 'governance']]
+    : [['warn', 'Approve go-live: merchant cohort 4', 'Evidence complete · waiting for you', 'governance'], ['bad', 'Reconciliation break RB-2291', '214 settlements without a ledger posting', 'engines', 'recon'], ['blue', 'Fund the next tool', 'KYC refresh · 77% reuse', 'x:prog:kyc'], ['warn', `${S.approvals} decisions with named owners`, 'Across all teams · none overdue', 'governance']];
+  return `${head(`${CO[S.co].name} · executive view`, 'Where Glass is paying off', 'Value, programmes, growth and the decisions that need you, on one page.', `<div style="display:flex;gap:10px;align-items:center"><span class="xlive"><i></i>Live</span>${xRange()}<button class="btn" type="button" data-go="value">${ic('xcalc', 14)}Value calculator</button></div>`)}
+  <div class="xk">
+    ${xKpi('Hours given back', `${fmt(nowH)}`, `<span class="up">▲ ${Math.round((nowH / prevH - 1) * 100)}%</span> this month`, {accent: true, id: 'xHrs', tip: 'Hours given back|Staff hours the tools on Glass took off people this month'})}
+    ${xKpi('Staff time', `${(nowH / XFTE).toFixed(1)} FTE`, 'equivalent, at 160 h a month', {tip: 'Staff time|Hours given back divided by 160 working hours a month'})}
+    ${xKpi('Cost avoided', `${xmoney(cost)}`, `this month · at ${xcur(S.x.rate)}/h`, {go: 'value', tip: 'Cost avoided|Change the hourly rate in the value calculator'})}
+    ${xKpi('Tools on Glass', `${live + pilot}`, `${live} live · ${pilot} in pilot · ${P.length - live - pilot} next`, {x: 'prog-scroll'})}
+    ${xKpi('Waiting for you', `${XMZ() ? 4 : 4}`, 'decisions with evidence ready', {x: 'dec-scroll'})}
+  </div>
+  <div class="x2">
+    ${xCard('Value delivered', 'hours given back · cumulative', `${xBars(xSlice(MONTHS), [{n: 'Hours given back', v: xSlice(hrs), c: 'var(--royal)'}], {line: {n: 'Cumulative', v: xSlice(cum), c: '#16B39A'}, h: 240, alt: 'Hours given back each month, with the cumulative total', fmt: v => fmt(v) + ' h', lfmt: v => fmt(v) + ' h'})}<div class="xleg"><span><i style="background:var(--royal)"></i>Hours each month</span><span><i style="background:#16B39A"></i>Cumulative · ${fmt(cum[cum.length - 1])} h · ${xmoney(cum[cum.length - 1] * S.x.rate)}</span></div>`)}
+    ${xCard('Compliance position', XMZ() ? 'CBUAE standards' : 'all regulations', `<div class="xgauge">${xRing(comp, '80%', 'still valid')}<div class="xrows">${comp.map(([n, v, cc]) => `<button class="xrow" type="button" data-go="library"><i style="background:${cc}"></i><span>${n}</span><strong>${v}</strong></button>`).join('')}</div></div><div class="xmini"><div><small>Standards covered</small><b>${XMZ() ? 7 : 9}</b></div><div><small>Re-checked today</small><b>41</b></div><div><small>Open gaps</small><b>${XMZ() ? 21 : 18}</b></div></div>`)}
+  </div>
+  <div id="xProg">${xCard('Programmes on Glass', 'click any for detail', `<div class="xprog">${[...P].sort((a, b) => XORDER.indexOf(a.st) - XORDER.indexOf(b.st)).map(p => `<button class="xp${p.st === 'Live' ? ' live' : ''}" type="button" data-x="prog:${p.id}"><span class="xic">${ic(p.ic, 16)}</span><span><b>${p.n}</b><small>${p.owner}</small></span><span class="xst ${p.st}">${p.st}</span><span class="xbarline" data-tip="${esc(p.n)}|${p.p}% complete"><i style="width:${p.p}%"></i></span><span class="xsp">${p.trend.some(v => v) ? spark(p.trend.filter((v, i) => i >= p.start), 120, 30) : '<small>not started</small>'}</span><span class="xv">${p.metric[1]}<small>${p.metric[0]}</small></span>${ic('chevron', 14)}</button>`).join('')}</div>`)}</div>
+  <div class="x2e">
+    ${xCard('Growth against the team', 'indexed, Nov = 100', `${xLines(MONTHS, [{n: grow.a, v: gA, c: 'var(--royal)', fill: true}, {n: grow.b, v: gB, c: '#3AA0E8'}, {n: 'Team', v: gT, c: 'var(--faint)', dash: true}], {h: 290, min: 90, alt: 'Customers and employers grow while the team stays almost flat', fmt: gTip, fmtA: v => Math.round(v)})}<div class="xleg"><span><i style="background:var(--royal)"></i>${grow.a} +${Math.round((grow.a1 / grow.a0 - 1) * 100)}%</span><span><i style="background:#3AA0E8"></i>${grow.b} +${Math.round((grow.b1 / grow.b0 - 1) * 100)}%</span><span><i style="background:var(--faint)"></i>Team +${Math.round((grow.t1 / grow.t0 - 1) * 100)}%</span></div>`)}
+    ${xCard(XMZ() ? 'Partners and employers, signed to live' : 'Merchants, signed to live', 'this quarter', `<div class="xfun">${fun.map(([n, v], i) => `<button class="xf" type="button" data-go="governance" data-tip="${esc(n)}|${v} ${XMZ() ? 'partners and employers' : 'merchants'}"><span>${n}</span><span class="tr"><i style="width:${(v / fun[0][1] * 100).toFixed(1)}%;animation-delay:${(.2 + i * .08).toFixed(2)}s"></i></span><span class="n">${v}</span></button>`).join('')}</div><div class="xmini"><div><small>Median days to live</small><b>${ttl[11]}</b></div><div><small>A year ago</small><b>${ttl[0]}</b></div><div><small>Trend</small>${spark(ttl, 110, 28, 'var(--good)')}</div></div>`)}
+  </div>
+  <div id="xDec">${xCard('Waiting for you', 'evidence ready, one click to decide', `<div class="attn">${dec.map(([s, t, d, r, e]) => r.startsWith('x:') ? `<button class="attn-row" type="button" data-x="${r.slice(2)}"><span class="stripe ${s}"></span><span><b>${t}</b><span>${d}</span></span>${ic('play', 12)}</button>` : `<button class="attn-row" type="button" data-go="${r}"${e ? ` data-engine="${e}"` : ''}><span class="stripe ${s}"></span><span><b>${t}</b><span>${d}</span></span>${ic('play', 12)}</button>`).join('')}</div>`)}</div>
+  <p class="foot-note">Synthetic data, shaped to show how Glass would report. Not ${CO[S.co].name}’s real figures.</p>`;
+}
+
+/* ---------- CTO view ---------- */
+function vCTO() {
+  const P = xprogs(), d14 = days, r = mulberry(101);
+  const allowed = d14.map(() => 820 + Math.round(r() * 260)), person = d14.map(() => 40 + Math.round(r() * 30)), refused = d14.map(() => 4 + Math.round(r() * 10));
+  const p50 = d14.map(() => 210 + Math.round(r() * 40)), p95 = d14.map(() => 520 + Math.round(r() * 120));
+  const tools = XMZ() ? [['Reg change autopilot', 412, 18], ['Partner launch checker', 268, 3.1], ['Employer onboarding', 231, 2.4], ['Complaint assistant', 184, .9], ['Payroll exception watch', 96, .4], ['Ask Glass and MCP', 142, .2]] : [['Regulatory change', 398, 17], ['Complaints resolution', 352, 1.1], ['Settlement reconciliation', 241, 1.6], ['Merchant onboarding', 205, 2.2], ['Fincrime triage', 118, .5], ['Ask Glass and MCP', 160, .2]];
+  const tmax = Math.max(...tools.map(t => t[1]));
+  const reuse = [...P].sort((a, b) => a.start - b.start);
+  const span = 16, now = 11.5, tlx = p => XTL[XMZ() ? 'myzoi' : 'halden'][p.id] || [p.start, p.end];
+  const fresh = SOURCES.filter(s => s.status === 'ok').length;
+  return `${head(`${CO[S.co].name} · technology view`, 'Platform health and delivery', 'What Glass is connected to, how it is behaving, what it costs to run, and what ships next.', `<div style="display:flex;gap:10px;align-items:center"><span class="xlive"><i></i>Live</span><button class="btn" type="button" data-go="arch">${ic('cpu', 14)}Architecture</button></div>`)}
+  <div class="xk">
+    ${xKpi('Systems connected', `${SOURCES.length}`, `${fresh} healthy · read-only`, {go: 'sources'})}
+    ${xKpi('Records admitted today', fmt(S.records), 'after every quality gate', {accent: true, id: 'kRecords', go: 'quality'})}
+    ${xKpi('Actions checked by Glass', fmt(S.actions), '14 refused · 0 bypassed', {id: 'kActions', go: 'governance'})}
+    ${xKpi('Quality pass rate', '99.99%', '312 quarantined', {go: 'quality'})}
+    ${xKpi('Permanent record', '<span style="color:var(--good)">Intact</span>', '48,201 entries verified', {go: 'trust'})}
+  </div>
+  ${xCard('Connected systems', 'click any for its health', `<div class="xsrc">${SOURCES.map(s => `<button class="xs" type="button" data-src="${s.id}"><span class="xs-h"><i class="${s.status === 'ok' ? 'ok' : s.status === 'warn' ? 'warn' : s.status === 'bad' ? 'bad' : 'unk'}"></i><b>${s.name}</b></span>${spark(Array.from({length: 12}, () => s.today * (.85 + r() * .3)), 160, 26)}<span class="xs-f"><span>${fmt(s.today)} today</span><span>${s.status === 'ok' ? 'on time' : s.status === 'warn' ? 'slow' : 'held'}</span></span></button>`).join('')}</div>`)}
+  <div class="x2e">
+    ${xCard('Gateway decisions', 'last 14 days', `${xBars(d14, [{n: 'Allowed by policy', v: allowed, c: 'var(--royal)'}, {n: 'Sent to a person', v: person, c: '#E2A23B'}, {n: 'Refused', v: refused, c: 'var(--bad)'}], {stack: true, h: 230, alt: 'Agent actions allowed, sent to a person or refused each day'})}<div class="xleg"><span><i style="background:var(--royal)"></i>Allowed by policy</span><span><i style="background:#E2A23B"></i>Sent to a person</span><span><i style="background:var(--bad)"></i>Refused</span></div>`)}
+    ${xCard('Response time', 'governed queries · ms', `${xLines(d14, [{n: 'p50', v: p50, c: 'var(--royal)', fill: true}, {n: 'p95', v: p95, c: '#8B6CF6', dash: true}], {h: 230, min: 0, alt: 'Median and 95th percentile response times', fmt: v => v + ' ms'})}<div class="xleg"><span><i style="background:var(--royal)"></i>Median ${p50[13]} ms</span><span><i style="background:#8B6CF6"></i>95th percentile ${p95[13]} ms</span><span>Target under 800 ms</span></div>`)}
+  </div>
+  <div class="x2e">
+    ${xCard('AI usage and cost by tool', 'this month', `<div class="xfun">${tools.map(([n, runs, c], i) => `<div class="xf" data-tip="${esc(n)}|${fmt(runs)} runs · about ${xcur(runs * c)} · ${xcur(c)} a run"><span>${n}</span><span class="tr"><i style="width:${(runs / tmax * 100).toFixed(1)}%;animation-delay:${(.2 + i * .07).toFixed(2)}s"></i></span><span class="n">${xmoney(runs * c)}</span></div>`).join('')}</div><div class="xmini"><div><small>Total this month</small><b>${xmoney(tools.reduce((a, t) => a + t[1] * t[2], 0))}</b></div><div><small>Runs</small><b>${fmt(tools.reduce((a, t) => a + t[1], 0))}</b></div><div><small>Model</small><b style="font-size:15px">Claude</b></div></div>`)}
+    ${xCard('Reuse: each tool builds on the last', 'share of parts already on Glass', `${xBars(reuse.map((p, i) => String(i + 1)), [{n: 'Reused', v: reuse.map(p => p.reuse), c: 'var(--royal)'}, {n: 'New', v: reuse.map(p => 100 - p.reuse), c: 'var(--royal-100)'}], {stack: true, h: 230, alt: 'Each new tool reuses more connectors, definitions and rules', fmt: v => v + '%', fmtA: v => Math.round(v) + '%'})}<div class="xleg">${reuse.map((p, i) => `<span>${i + 1} ${p.n}</span>`).join('')}</div>`)}
+  </div>
+  ${xCard('Delivery timeline', 'Nov 2025 – Feb 2027', `<div class="tbl-wrap"><div class="xgantt"><div class="xg-head"><span></span><div>${['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'].map(m => `<span>${m}</span>`).join('')}</div></div>${reuse.map(p => `<button class="xg-row" type="button" data-x="prog:${p.id}"><span>${p.n}</span><span class="xg-tr"><span class="xg-bar" style="left:${(tlx(p)[0] / span * 100).toFixed(1)}%;width:${((tlx(p)[1] - tlx(p)[0]) / span * 100).toFixed(1)}%;background:${p.st === 'Live' ? 'var(--fill)' : p.st === 'Pilot' ? '#3AA0E8' : p.st === 'Build' ? '#E2A23B' : p.st === 'Design' ? '#8B6CF6' : '#9AA2BA'}" data-tip="${esc(p.n)}|${p.st} · ${p.p}% · ${p.reuse}% reused">${p.st}</span><span class="xg-now" style="left:${(now / span * 100).toFixed(1)}%" aria-hidden="true"></span></span></button>`).join('')}</div></div><div class="xleg"><span><i style="background:var(--bad)"></i>Today</span>${XORDER.map((s, i) => `<span><i style="background:${['var(--fill)', '#3AA0E8', '#E2A23B', '#8B6CF6', '#9AA2BA'][i]}"></i>${s}</span>`).join('')}</div>`)}
+  <div class="kpis">
+    <div class="kpi"><span class="k">Personal data reads masked</span><span class="v">9,412</span><span class="d">by role, before any agent sees it</span></div>
+    <div class="kpi"><span class="k">Approvals expired unused</span><span class="v">3</span><span class="d">evidence changed, so they no longer count</span></div>
+    <div class="kpi"><span class="k">Schema changes held</span><span class="v">1</span><span class="d">waiting for a mapping approval</span></div>
+    <div class="kpi"><span class="k">Agents with a human owner</span><span class="v">100%</span><span class="d">25 of 25</span></div>
+  </div>
+  <p class="foot-note">Synthetic data. Systems other than Confluence, SharePoint and Jira are assumed for the demo.</p>`;
+}
+
+/* ---------- value calculator ---------- */
+function vValue() {
+  const c = xCalc();
+  return `${head(`${CO[S.co].name} · value calculator`, 'What Glass gives back', 'Pick the processes, set the hours and your cost of staff time. The figures update as you go.', `<button class="btn" type="button" data-x="calc-reset">${ic('play', 12)}Reset</button>`)}
+  <div class="xcalc">
+    ${xCard('Processes', 'hours of staff time a month, today', `<div class="xproc">${S.x.procs.map((p, i) => `<div class="xpr${p.on ? '' : ' off'}" id="xpr${i}"><button class="tg${p.on ? ' on' : ''}" type="button" data-x="tog:${i}" aria-pressed="${p.on}" aria-label="Include ${esc(p.n)}">${p.on ? ic('check', 13, 3) : ''}</button><b>${p.n}</b><input type="range" min="0" max="240" step="5" value="${p.h}" data-xin="h:${i}" aria-label="${esc(p.n)} hours a month"><span class="hv" id="xhv${i}">${p.h} h</span></div>`).join('')}</div>`)}
+    <div style="display:grid;gap:16px">
+      <div class="xsl"><div class="xsl-h"><span>Cost of an hour of staff time</span><strong id="xRate">${xcur(S.x.rate)}</strong></div><input type="range" min="${XMZ() ? 40 : 15}" max="${XMZ() ? 400 : 150}" step="5" value="${S.x.rate}" data-xin="rate" aria-label="Cost of an hour of staff time"></div>
+      <div class="xsl"><div class="xsl-h"><span>Share of the work Glass takes</span><strong id="xShare">${S.x.share}%</strong></div><input type="range" min="40" max="95" step="5" value="${S.x.share}" data-xin="share" aria-label="Share of the work Glass takes"></div>
+      <div class="xout">
+        <div class="xo accent"><small>Hours given back</small><b id="xoBack">${fmt(Math.round(c.back))}</b><span>a month</span></div>
+        <div class="xo"><small>Staff time</small><b id="xoFte">${c.fte.toFixed(1)}</b><span>full-time people</span></div>
+        <div class="xo"><small>Cost avoided</small><b id="xoMonth">${xmoney(c.month)}</b><span>a month</span></div>
+        <div class="xo"><small>In a year</small><b id="xoYear">${xmoney(c.year)}</b><span>${fmt(Math.round(c.back * 12))} hours</span></div>
+      </div>
+      ${xCard('Today against with Glass', 'hours a month', `<div class="xcmp"><div class="row"><span>Today</span><span class="tr"><i id="xcT" style="width:100%;background:var(--faint)"></i></span><span class="v" id="xcTv">${fmt(c.today)} h</span></div><div class="row"><span>With Glass</span><span class="tr"><i id="xcG" style="width:${(c.left / (c.today || 1) * 100).toFixed(1)}%;background:var(--royal)"></i></span><span class="v" id="xcGv">${fmt(Math.round(c.left))} h</span></div></div><p class="xnote" style="margin-top:12px">${ic('user', 13)}<span>What stays with people: decisions, sign-off and the hard cases.</span></p>`)}
+    </div>
+  </div>
+  <p class="foot-note">Illustration. Replace the example hours and rate with measured figures from ${CO[S.co].name}’s own processes.</p>`;
+}
+function xCalcPaint() {
+  const c = xCalc(), set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('xRate', xcur(S.x.rate)); set('xShare', S.x.share + '%'); set('xoBack', fmt(Math.round(c.back))); set('xoFte', c.fte.toFixed(1)); set('xoMonth', xmoney(c.month)); set('xoYear', xmoney(c.year));
+  set('xcTv', fmt(c.today) + ' h'); set('xcGv', fmt(Math.round(c.left)) + ' h');
+  const g = document.getElementById('xcG'); if (g) g.style.width = (c.left / (c.today || 1) * 100).toFixed(1) + '%';
+  const yr = document.querySelector('#xoYear + span'); if (yr) yr.textContent = fmt(Math.round(c.back * 12)) + ' hours';
+}
+
+/* ---------- programme detail ---------- */
+function xProgDrawer(id) {
+  const p = xprogs().find(x => x.id === id); if (!p) return;
+  const steps = ['Design', 'Build', 'Pilot', 'Live'], at = steps.indexOf(p.st);
+  const parts = XMZ() ? ['HR feed', 'CRM', 'Policy library', 'Complaints', 'Wallet ledger', 'Partner register', 'Obligations', 'Owner map'] : ['HR feed', 'CRM', 'Policy library', 'Complaints', 'Ledger', 'Merchant register', 'Obligations', 'Owner map'];
+  const reused = Math.round(parts.length * p.reuse / 100);
+  const tr = p.trend.filter((v, i) => i >= p.start);
+  openDrawer(`<div class="eyebrow">Programme · ${p.st}</div><h2>${p.n}</h2><p class="sub">Owner: ${p.owner}</p>`,
+    `<div class="xstep">${steps.map((s, i) => `<span class="${i < at ? 'done' : i === at ? 'now' : ''}">${s}</span>`).join('')}</div>
+    <div class="xout"><div class="xo accent"><small>${p.metric[0]}</small><b style="font-size:24px">${p.metric[1]}</b><span>synthetic result</span></div><div class="xo"><small>Hours given back</small><b style="font-size:24px">${p.st === 'Live' || p.st === 'Pilot' ? fmt(p.hrs) : '—'}</b><span>a month, at full use</span></div><div class="xo"><small>Complete</small><b style="font-size:24px">${p.p}%</b><span>of the plan</span></div><div class="xo"><small>Reused from Glass</small><b style="font-size:24px">${p.reuse}%</b><span>connectors, definitions, rules</span></div></div>
+    ${tr.some(v => v) ? `<div><div class="section-t">${p.tu}</div>${xLines(MONTHS.slice(p.start), [{n: p.metric[0], v: tr, c: 'var(--royal)', fill: true}], {h: 180, w: 560, alt: p.metric[0] + ' over time'})}</div>` : ''}
+    <div><div class="section-t">Built from</div><div class="chips">${parts.map((x, i) => `<span class="chip${i < reused ? ' blue' : ''}">${i < reused ? ic('check', 11) : ic('wrench', 11)}${x}${i < reused ? '' : ' · new'}</span>`).join('')}</div></div>
+    <div><div class="section-t">Watch</div><p class="sub">${p.risk}</p></div>
+    <button class="btn primary" type="button" data-go="${p.go}"${p.eng ? ` data-engine="${p.eng}"` : ''}>${ic('play', 12)}See it in the simulation</button>`);
+}
+
+/* routes and wiring */
+Object.assign(VIEWS, {ceo: vCEO, cto: vCTO, value: () => { xCalc(); return vValue(); }});
+TOUR.unshift(['ceo', 'Start with the business', 'The CEO view: hours given back, programmes built on Glass, growth against the team, and the decisions waiting for you. Click any programme, bar or tile for more. The CTO view and the value calculator sit beside it.']);
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-x],[data-xrange]'); if (!t) return;
+  const d = t.dataset;
+  if (d.xrange) { S.x.range = +d.xrange; S.enter = true; render(); return; }
+  const x = d.x;
+  if (x.startsWith('prog:')) xProgDrawer(x.slice(5));
+  else if (x === 'prog-scroll') { const el = $('#xProg'); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }
+  else if (x === 'dec-scroll') { const el = $('#xDec'); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }
+  else if (x.startsWith('tog:')) { const p = S.x.procs[+x.slice(4)]; p.on = !p.on; const y = window.scrollY; render(); window.scrollTo(0, y); }
+  else if (x === 'calc-reset') { S.x.procs = null; xCalc(); render(); toast('Calculator reset to the example figures'); }
+});
+document.addEventListener('input', e => {
+  const t = e.target.closest && e.target.closest('[data-xin]'); if (!t) return;
+  const k = t.dataset.xin, v = +t.value;
+  if (k === 'rate') S.x.rate = v; else if (k === 'share') S.x.share = v; else if (k.startsWith('h:')) { const i = +k.slice(2); S.x.procs[i].h = v; const hv = document.getElementById('xhv' + i); if (hv) hv.textContent = v + ' h'; }
+  xCalcPaint();
+});
+/* the CEO "hours given back" ticks up while live */
+setInterval(() => { if (document.hidden || S.present || S.paused || S.route !== 'ceo') return; const el = $('#xHrs'); if (!el) return; const n = parseInt(el.textContent.replace(/,/g, ''), 10); if (isFinite(n) && rnd() < .5) el.textContent = fmt(n + 1); }, 3200);
+/* myZoi opens on the CEO view when no page is named in the link */
+if (!location.hash && S.co === 'myzoi') { try { history.replaceState(null, '', '#ceo'); } catch (e) { /* sandboxed frame */ } }
+
 const [start, startQs] = parseHash(); applyParams(start, startQs);
 S.route = start;
 renderCompany();
@@ -5570,5 +5963,4 @@ paintMotion();
 document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('th-log')) S.libLogOpen = e.target.open; }, true);
 </script>
 
-</body>
-</html>
+</body></html>
