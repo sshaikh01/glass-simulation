@@ -1742,6 +1742,21 @@ g.on .x-tb { fill: var(--royal); }
   .x-tor-r { grid-template-columns: 1fr; gap: 3px; }
 }
 .sb-card > span > small { color: var(--ink2) !important; }
+/* v18: one pause for all motion, the plain-words answer on Ask Glass */
+html.paused .live i, html.paused .pipe i, html.paused .typing i, html.paused .sdot.run, html.paused .thtrack .tok, html.paused .stn.now .a2, html.paused .radar::after, html.paused .omap .e2.path, html.paused .omap .n2.now rect, html.paused .m-wires path, html.paused .sb-s.now .sb-av, html.paused .arch .wire.hot, html.paused .p2.cur i, html.paused .x-rd { animation-play-state: paused !important; }
+.paused-bar { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 60; display: inline-flex; align-items: center; gap: 10px; background: #0E1838; color: #DCE3FF; border-radius: 999px; padding: 6px 6px 6px 14px; font-size: 12.5px; font-weight: 700; box-shadow: 0 8px 24px rgba(14,24,56,.25); }
+.paused-bar button { display: inline-flex; align-items: center; gap: 6px; background: var(--royal); color: #fff; border: 0; border-radius: 999px; padding: 5px 12px; font: inherit; cursor: pointer; }
+.paused-bar button:hover { filter: brightness(1.1); }
+button.live { font-family: inherit; cursor: pointer; }
+.sim-pill, .live { white-space: nowrap; flex-shrink: 0; }
+@media (max-width: 1366px) { .top .sim-pill { display: none; } }
+button.live:hover { border-color: var(--royal); color: var(--ink); }
+.live-ic { display: inline-flex; margin-left: 1px; padding-left: 7px; border-left: 1px solid var(--line); color: var(--royal); }
+.ans-say { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink); }
+.ans-say b { font-weight: 800; }
+.json-note { margin: 8px 0 0; }
+@media print { .paused-bar { display: none !important; } }
+@media (max-width: 480px) { #liveText { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .live { padding: 7px 9px; } .live-ic { padding-left: 6px; } }
 </style>
 
 <div class="app">
@@ -1759,7 +1774,7 @@ g.on .x-tb { fill: var(--royal); }
       <div class="crumb" id="crumb"></div>
       <div class="top-right">
         <span class="sim-pill">Synthetic data</span>
-        <span class="live" id="livePill"><i></i><span id="liveText">Live</span></span>
+        <button class="live" id="livePill" type="button" data-motion aria-pressed="false" aria-label="Pause all motion (P)" title="Pause all motion (P)"><i></i><span id="liveText">Live</span><span class="live-ic" id="liveIc"></span></button>
         <button class="role-chip" id="roleChip" type="button" data-pop hidden></button>
         <button class="search-btn" id="searchBtn" type="button" data-cmdk aria-label="Search and commands (Command K)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg><span class="lbl">Search or ask…</span><kbd>⌘K</kbd></button>
         <button class="icon-btn" id="themeBtn" type="button" data-themecycle aria-label="Theme"></button>
@@ -1780,6 +1795,7 @@ g.on .x-tb { fill: var(--royal); }
 </aside>
 <div class="tour" id="tour" hidden></div>
 <div class="toast" id="toast" role="status"></div>
+<div class="paused-bar" id="pausedBar" role="status" hidden><span>Motion paused</span><button type="button" data-motion>Resume</button></div>
 
 <script>
 'use strict';
@@ -1813,6 +1829,7 @@ const I = {
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
   alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
   play: '<path d="M7 4l13 8-13 8z"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   hand: '<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v8a7 7 0 0 1-7 7h-.5a6 6 0 0 1-5-2.7L3 15.5a1.6 1.6 0 0 1 2.6-1.8L8 16"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/>',
@@ -2460,7 +2477,8 @@ function runTrace() {
   el.innerHTML = GATES.map((g, i) => `<div class="gate" data-g="${i}"><small>${i + 1} · ${g[0]}</small><b>${g[1]}</b><span>${g[2]}</span></div>`).join('');
   $('#traceSays').innerHTML = '<span class="sub">Checking…</span>';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  t.g.forEach((r, i) => setTimeout(() => {
+  t.g.forEach((r, i) => setTimeout(function gate() {
+    if (held('trace' + i, gate)) return;
     const n = el.querySelector(`[data-g="${i}"]`); if (!n) return;
     el.querySelectorAll('.gate').forEach(x => x.classList.remove('on')); n.classList.add(r, 'on');
     if (i === t.g.length - 1) { setTimeout(() => n.classList.remove('on'), 400); const says = $('#traceSays'); if (says) says.innerHTML = brand(t.say); }
@@ -2631,6 +2649,7 @@ function oPlay() {
   clearInterval(S.oTimer); S.qPath = null; S.oStep = 0; render();
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   S.oTimer = setInterval(() => {
+    if (S.paused) return;
     S.oStep++;
     const w = $('#omapWrap'), t = $('#oTrail'); if (w) w.innerHTML = ontoSvg(); if (t) t.innerHTML = ontoTrail();
     if (S.oStep >= OPATH.length - 1) { clearInterval(S.oTimer); S.oTimer = null; render(); }
@@ -2820,7 +2839,7 @@ function stopPlay() { if (S.playing) { clearInterval(S.playing); S.playing = nul
 function play() {
   const e = ENGINES.find(x => x.id === S.engine); stopPlay();
   if (S.caseStep >= ecase(e).steps.length) S.caseStep = 0;
-  const step = () => { S.caseStep++; const t = $('#timeline'); if (t) t.innerHTML = brand(caseSteps(e)); if (S.caseStep >= ecase(e).steps.length) { stopPlay(); render(); } };
+  const step = () => { if (S.paused) return; S.caseStep++; const t = $('#timeline'); if (t) t.innerHTML = brand(caseSteps(e)); if (S.caseStep >= ecase(e).steps.length) { stopPlay(); render(); } };
   step(); S.playing = setInterval(step, matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 1300);
   const b = document.querySelector('[data-play]'); if (b) b.innerHTML = ic('play', 12) + 'Playing…';
 }
@@ -3062,7 +3081,7 @@ function vFlow() {
   return `${head('Give it meaning', 'How it comes together', 'Data from systems inside the company and from outside sources is checked, joined into one shared model of the business, and given agreed meaning. Everything built on Glass reads that same meaning. Hover over any box to see where its data comes from and what uses it.')}
   <div class="card fx-card">
     <div class="fx-top"><div class="fx-steps">${FSTEPS.map((s, i) => `<button class="fx-step${st === i ? ' active' : ''}" type="button" data-fxstep="${i}"><i>${i + 1}</i>${s[1]}</button>`).join('')}</div>
-      <div class="fx-ctl"><button class="btn sm" type="button" data-fxmatch>${ic('user', 13)}Watch one customer come together</button><button class="btn sm" type="button" data-fxpause>${ic('play', 12)}<span id="fxPauseLbl">${FX.paused ? 'Play' : 'Pause'}</span></button></div></div>
+      <div class="fx-ctl"><button class="btn sm" type="button" data-fxmatch>${ic('user', 13)}Watch one customer come together</button><button class="btn sm" type="button" id="fxPauseBtn" data-motion>${ic(S.paused ? 'play' : 'pause', 12)}<span id="fxPauseLbl">${S.paused ? 'Play' : 'Pause'}</span></button></div></div>
     <div class="fx-caption" id="fxCap">${st >= 0 ? `<b>${st + 1} · ${FSTEPS[st][1]}</b><span>${FSTEPS[st][2]}</span>` : '<b>Live</b><span>Each dot is a record. Dark blue comes from inside the company, light blue from outside. Click a step above to follow it, or hover over any box.</span>'}</div>
     <div class="fx-counts"><div><small>Records arriving</small><strong id="fxIn">0</strong></div><div><small>Passed the gates</small><strong id="fxPass">0</strong></div><div><small>Quarantined</small><strong id="fxQ" style="color:var(--bad)">0</strong></div><div><small>Linked into entities</small><strong id="fxLink">0</strong></div><div><small>Served through definitions</small><strong id="fxServe">0</strong></div></div>
     <div class="fx-wrap">${svg}</div>
@@ -3162,7 +3181,7 @@ function fxCounts() {
 function fxTick(ts) {
   if (!$('#fx')) { FX.running = false; FX.parts = []; return; }
   const dt = Math.min(64, ts - (FX.last || ts)); FX.last = ts;
-  if (!FX.paused && !document.hidden) {
+  if (!S.paused && !document.hidden) {
     FX.spawnAcc += dt; while (FX.spawnAcc > 170) { FX.spawnAcc -= 170; spawnIn(); if (FX.burst > 0 && (FX.bt = (FX.bt || 0) + 1) % 3 === 0) { FX.burst--; spawnIn({s: fsrc('kyc'), e: 'Customer', label: 'K-' + (55190 + FX.burst * 7)}); } }
     for (const p of FX.parts) {
       p.t += dt;
@@ -3205,8 +3224,9 @@ function fxMatch() {
   const items = [['ledger', 'ledger 104-3321'], ['crm', 'CRM C-77812'], ['kyc', 'KYC K-55190'], ['complaints', 'requester 4471'], ['sanctions', 'screened: clear']];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   fxHighlight('ent:Customer');
-  items.forEach(([sid, label], i) => setTimeout(() => { if ($('#fx')) spawnIn({s: fsrc(sid), e: 'Customer', label}); }, reduce ? 0 : i * 280));
-  setTimeout(() => {
+  items.forEach(([sid, label], i) => setTimeout(function go() { if (held('fxm' + i, go)) return; if ($('#fx')) spawnIn({s: fsrc(sid), e: 'Customer', label}); }, reduce ? 0 : i * 280));
+  setTimeout(function merge() {
+    if (held('fxm-merge', merge)) return;
     if (!$('#fx')) return;
     document.getElementById('fe-Customer').classList.add('merged'); pulse('fe-Customer');
     const g = mk('g', {class: 'fx-call'}, $('#fxOver'));
@@ -3214,7 +3234,7 @@ function fxMatch() {
     [['5 records from 5 sources', 13.5, 800, 178], [`→ 1 customer · P-00418 · ${pii('name', 'Layla N. Haddad')}`, 12, 600, 200], ['Name from KYC · email from CRM · sanctions clear', 11, 500, 220], ['Home address: Unknown, sources disagree', 11, 500, 238]].forEach(([t, fs, fw, y]) => { const x = mk('text', {x: 626, y, 'font-size': fs, 'font-weight': fw}, g); x.textContent = t; });
     mk('path', {d: 'M610 170 L602 140', stroke: '#0E1838', 'stroke-width': 2}, g);
     $('#fxInfo').innerHTML = brand(fxInfo('ent:Customer'));
-    setTimeout(() => { if (g.isConnected) { g.style.transition = 'opacity .5s'; g.style.opacity = '0'; setTimeout(() => g.remove(), 520); } const c = document.getElementById('fe-Customer'); if (c) c.classList.remove('merged'); if (!FX.pin) fxHighlight(null); }, 6500);
+    setTimeout(function fade() { if (held('fxm-fade', fade)) return; if (g.isConnected) { g.style.transition = 'opacity .5s'; g.style.opacity = '0'; setTimeout(() => g.remove(), 520); } const c = document.getElementById('fe-Customer'); if (c) c.classList.remove('merged'); if (!FX.pin) fxHighlight(null); }, 6500);
   }, reduce ? 50 : 3900);
 }
 document.addEventListener('mouseover', e => { const n = e.target.closest && e.target.closest('#fx [data-fx]'); if (!n || FX.pin) return; fxHighlight(n.dataset.fx); $('#fxInfo').innerHTML = brand(fxInfo(n.dataset.fx)); });
@@ -3224,7 +3244,6 @@ document.addEventListener('click', e => {
   if (n) { const k = n.dataset.fx; FX.pin = FX.pin === k ? null : k; fxHighlight(FX.pin); $('#fxInfo').innerHTML = brand(fxInfo(FX.pin || k)); return; }
   const st = e.target.closest('[data-fxstep]'); if (st) { const i = +st.dataset.fxstep; if (FX.step === i) { FX.step = -1; $('#fx').classList.remove('focusing'); document.querySelectorAll('.fx-step').forEach(b => b.classList.remove('active')); } else fxFocus(i); return; }
   if (e.target.closest('[data-fxmatch]')) { fxFocus(2); return; }
-  if (e.target.closest('[data-fxpause]')) { FX.paused = !FX.paused; $('#fxPauseLbl').textContent = FX.paused ? 'Play' : 'Pause'; }
 });
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('#fx [data-fx]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', {bubbles: true})); } });
 
@@ -3429,6 +3448,7 @@ function thPlay(id, fast, then) {
   if (!fast) S.libLog = [];
   render();
   const tick = () => {
+    if (held('th', tick)) return;
     if (!S.th.playing || S.th.id !== id) return;
     thPaint(); thLog(i, S.th.step);
     if (S.th.step >= 4) {
@@ -4211,7 +4231,8 @@ function archPlay(k) {
   clearTimeout(archPlay.h); (archPlay.ts || []).forEach(clearTimeout); archPlay.ts = [];
   S.archFlow = k; render();
   const steps = AFLOW[k][2], reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, gap = reduce ? 0 : 650;
-  steps.forEach((s, i) => archPlay.ts.push(setTimeout(() => {
+  steps.forEach((s, i) => archPlay.ts.push(setTimeout(function hop() {
+    if (held('arch' + i, hop)) return;
     if (S.route !== 'arch' || S.archFlow !== k) return;
     const back = s.endsWith('<'), [a, b] = s.replace('<', '').split('>'), w = document.getElementById(`w-${a}-${b}`);
     const from = back ? b : a, to = back ? a : b;
@@ -4311,7 +4332,7 @@ function vTrace() {
 function trPlay() {
   clearTimeout(trPlay.h); const sc = TR[S.trScen], reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   S.trSel = null; S.trStep = 0; render();
-  const tick = () => { if (S.route !== 'trace') return; S.trStep++; render(); if (S.trStep < sc.steps.length) trPlay.h = setTimeout(tick, reduce ? 0 : 520); };
+  const tick = () => { if (held('tr', tick)) return; if (S.route !== 'trace') return; S.trStep++; render(); if (S.trStep < sc.steps.length) trPlay.h = setTimeout(tick, reduce ? 0 : 520); };
   trPlay.h = setTimeout(tick, reduce ? 0 : 520);
 }
 
@@ -4352,7 +4373,7 @@ function tvAttack(kind) {
 function tvRun() {
   tvInit(); const res = tvVerify(S.tv), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, stop = res ? res.at : S.tv.length - 1;
   S.tvState = {checking: 0, res: undefined}; render();
-  const step = i => { if (S.route !== 'trust') return; S.tvState.checking = i; if (i > stop) { S.tvState.res = res; S.tvState.checking = -1; render(); return; } render(); setTimeout(() => step(i + 1), reduce ? 0 : 280); };
+  const step = i => { if (held('tv', () => step(i))) return; if (S.route !== 'trust') return; S.tvState.checking = i; if (i > stop) { S.tvState.res = res; S.tvState.checking = -1; render(); return; } render(); setTimeout(() => step(i + 1), reduce ? 0 : 280); };
   step(0);
 }
 function vTrust() {
@@ -4541,6 +4562,7 @@ function cmdItems() {
   A('Copy a link to this view', 'Includes the selected item, company and view', 'share', shareLink, 'share url');
   A('Print or save this page as PDF', 'Clean light layout without navigation', 'printer', () => setTimeout(() => window.print(), 80), 'pdf export');
   A('Start the guided tour', `${TOUR.length} steps`, 'play', () => tourTo(0));
+  A(S.paused ? 'Resume motion' : 'Pause all motion', 'Stops the moving records, animations and live numbers', S.paused ? 'play' : 'pause', () => setPaused(!S.paused), 'pause freeze stop animation');
   A(S.present ? 'Turn off presenter mode' : 'Turn on presenter mode', 'Freezes live numbers; arrow keys move the tour', 'play', () => setPresent(!S.present));
   A('Reset the demo', 'Back to the starting state', 'archive', () => { resetDemo(); skeletonFlash(); });
   A('Keyboard shortcuts', 'Press ? at any time', 'keyboard', openKeys, 'help hotkeys');
@@ -4595,7 +4617,7 @@ function cmdClose(keepFocus) { const el = $('#cmdk'); if (el) el.remove(); CK.op
 
 /* keyboard shortcuts */
 const KEYS = [
-  ['General', [['Search and commands', ['⌘', 'K']], ['Search (alternative)', ['/']], ['Keyboard shortcuts', ['?']], ['Switch theme', ['T']], ['Engineering view on or off', ['X']], ['Copy a link to this view', ['C']], ['Previous or next page', ['[', ']']], ['Close a panel or dialog', ['esc']]]],
+  ['General', [['Search and commands', ['⌘', 'K']], ['Search (alternative)', ['/']], ['Keyboard shortcuts', ['?']], ['Switch theme', ['T']], ['Engineering view on or off', ['X']], ['Pause or resume all motion', ['P']], ['Copy a link to this view', ['C']], ['Previous or next page', ['[', ']']], ['Close a panel or dialog', ['esc']]]],
   ['Go to', [['Overview', ['G', 'O']], ['How it comes together', ['G', 'H']], ['Ask Glass', ['G', 'A']], ['Sources', ['G', 'S']], ['Quality', ['G', 'Q']], ['Ontology', ['G', 'N']], ['Semantic layer', ['G', 'M']], ['Evidence library', ['G', 'L']], ['Domain engines', ['G', 'E']], ['Role-based agents', ['G', 'R']], ['Apps, APIs and MCP', ['G', 'P']], ['Governance', ['G', 'V']], ['Architecture', ['G', '1']], ['Request trace', ['G', '2']], ['Security and trust', ['G', '3']], ['Limits and evidence', ['G', '4']]]],
 ];
 const GO_KEYS = {o: 'overview', h: 'flow', a: 'ask', s: 'sources', q: 'quality', n: 'ontology', m: 'semantic', l: 'library', e: 'engines', r: 'agents', p: 'outputs', v: 'governance', 1: 'arch', 2: 'trace', 3: 'trust', 4: 'limits'};
@@ -4621,6 +4643,7 @@ document.addEventListener('keydown', e => {
   else if (k === '?') { e.preventDefault(); openKeys(); }
   else if (k === 't' || k === 'T') cycleTheme();
   else if (k === 'x' || k === 'X') setEng(!S.eng);
+  else if (k === 'p' || k === 'P') setPaused(!S.paused);
   else if (k === 'c' || k === 'C') shareLink();
   else if (k === '[' || k === ']') { const order = NAV.filter(g => !g[2] || S.eng).flatMap(g => g[1].map(x => x[0])).filter(id => !ROLES[S.role].hide.includes(id)); const i = order.indexOf(S.route); go(order[(i + (k === ']' ? 1 : order.length - 1)) % order.length]); }
 });
@@ -4826,12 +4849,12 @@ function vAsk() {
   const disp = r && r.plan.res.disp, dcls = {AVAILABLE: 'ok', REFUSED: 'bad', NOT_MAPPED: 'unk'}[disp] || 'unk';
   const answer = !r ? `<div class="card-b" style="display:grid;gap:16px"><p style="color:var(--ink2);font-size:14px">Ask in plain words. Glass maps the question to a <b>published query</b>, checks who is asking, whether the graph is current and what each record allows, then answers with <b>citations</b>, or holds and says why. It never improvises a query.</p>${['Customers and complaints', 'Risk and compliance', 'Operations'].map((g, gi) => `<div><div class="section-t">${g}</div><div class="sugg">${ASK.filter((x, i) => [[0, 1, 3, 9], [2, 4, 8, 10], [5, 6, 7]][gi].includes(i)).map(x => `<button type="button" data-askq="${esc(x.q)}">${esc(x.q)}</button>`).join('')}</div></div>`).join('')}</div>`
     : !done ? `<div class="card-b" style="display:grid;gap:12px"><div class="sk" style="height:46px;width:40%"></div><div class="sk" style="height:14px;width:80%"></div><div class="sk" style="height:14px;width:70%"></div><div class="sk" style="height:120px"></div></div>`
-    : `<div class="card-b" style="display:grid;gap:16px">${askAnswer(a, r)}${a && disp !== 'NOT_MAPPED' ? `
+    : `<div class="card-b" style="display:grid;gap:16px">${a && disp === 'AVAILABLE' && askSay(a, r) ? `<p class="ans-say">${askSay(a, r)}</p>` : ''}${askAnswer(a, r)}${a && disp !== 'NOT_MAPPED' ? `
       <div class="ans-meta"><div><span>Query</span><b title="${a.query}">${a.query}</b></div><div><span>Answered from</span><b>${disp !== 'AVAILABLE' ? 'Nothing returned' : r.at ? 'PostgreSQL history' : 'Graph, parity checked'}</b></div>${a.def ? `<div><span>Definition</span><b>${a.def[0]} ${a.def[1][r.at]}</b></div>` : ''}<div><span>Owner</span><b>${a.owner}</b></div><div><span>As of</span><b>${ASOF[r.at][0]}</b></div></div>
       ${disp === 'AVAILABLE' ? `<div><div class="section-t">Citations · 4 of ${fmt((a.count ? a.count[0] : 40) * 7 + 3)} shown</div><div class="cites">${askCites(a, r.at).map(c => `<button class="cite" type="button" data-cite="${c}">${c}</button>`).join('')}</div></div>` : ''}
       ${r.plan.missing && r.plan.missing.length && disp === 'AVAILABLE' ? `<div><div class="section-t">Hidden for ${ASK_WHO[r.who].n.toLowerCase()}</div><div class="chips">${r.plan.missing.map(m => `<span class="hid">${ic('lock', 10)}${m}</span>`).join('')}</div></div>` : ''}
       <div style="display:flex;gap:8px;flex-wrap:wrap">${a.link ? `<button class="btn sm" type="button" data-askmap="${a.link[0]}|${a.link[1]}">${ic('graph', 13)}See the path on the business map</button>` : ''}<button class="btn sm" type="button" data-askcopy="curl">${ic('copy', 13)}Copy as cURL</button><button class="btn sm" type="button" data-askcopy="mcp">${ic('copy', 13)}Copy as MCP call</button></div>
-      <details class="tech"><summary>Show the response JSON</summary><div class="code dark" style="margin-top:8px">${jsonHtml(askResponse(a, r))}</div></details>
+      <details class="tech"><summary>Show the response JSON</summary><div class="code dark" style="margin-top:8px">${jsonHtml(askResponse(a, r))}</div><p class="sub json-note">Every answer carries these two flags. <span class="mono">authority_granted: false</span> means no AI can act on this result alone. <span class="mono">source_content_trust: UNTRUSTED_DATA</span> means free text from source systems, such as what a customer typed in a complaint, is treated as information and never obeyed as an instruction. The figures themselves are governed and cited.</p></details>
       ${a.follow ? `<div><div class="section-t">Ask next</div><div class="sugg">${a.follow.map(id => ASK.find(x => x.id === id)).map(x => `<button type="button" data-askq="${esc(x.q)}">${esc(x.q)}</button>`).join('')}</div></div>` : ''}` : ''}</div>`;
   return `${head('Put Glass to the test', 'Ask Glass', 'Ask a question the way a person would. Watch Glass check it, answer it with citations, or refuse and say why. Change who is asking, go back in time, or break something in the failure lab.')}
   <div class="card"><div class="card-b ask-box">
@@ -4847,6 +4870,20 @@ function vAsk() {
     </div>
   </div>
   <p class="foot-note">Answers use synthetic data. The order of checks, the dispositions and the reason codes follow the Glass runtime; question matching here is a fixed list of published queries.</p>`;
+}
+function askSay(a, r) {
+  const at = r.at, past = !!at, V = (now, then) => past ? then : now, when = at ? `on ${ASOF[at][0]}` : 'right now', c = a.count ? a.count[Math.min(at, a.count.length - 1)] : null, b = x => `<b>${x}</b>`;
+  const since = (v, prev, f) => prev == null ? '' : ` That is ${v > prev ? 'up' : 'down'} ${f(Math.abs(v - prev))} since ${ASOF[at + 1][0]}.`;
+  if (a.id === 'cbp') { const rows = a.data(at), tot = rows.reduce((n, x) => n + x[1], 0); return `${b(rows[0][0])} ${V('gets', 'got')} the most complaints ${when}: ${b(fmt(rows[0][1]))} of ${fmt(tot)}, or ${Math.round(rows[0][1] / tot * 100)}%. ${rows[1][0]} ${V('is', 'was')} next with ${fmt(rows[1][1])}.`; }
+  if (a.id === 'active') return `There ${V('are', 'were')} ${b(fmt(a.vals[at]) + ' active customers')} ${when}, counted with definition ${a.def[1][at]}.${since(a.vals[at], a.vals[at + 1], fmt)}`;
+  if (a.id === 'restime') return `Complaints ${V('take', 'took')} ${b(a.vals[at].toFixed(1) + ' business days')} on average to resolve ${when}.${since(a.vals[at], a.vals[at + 1], n => n.toFixed(1) + ' days')} Card disputes ${V('are', 'were')} the slowest, at 8.1 days.`;
+  if (a.id === 'breach') { const rows = a.rows(at), t = rows.reduce((m, x) => x[4] < m[4] ? x : m); return `${b(fmt(c) + ' complaints')} ${V('have', 'had')} fewer than 3 business days left ${when}. The tightest ${V('is', 'was')} ${b(t[0])} (${t[2].toLowerCase()}), with ${t[4]} business day${t[4] === 1 ? '' : 's'} left, handled by ${t[3]}.`; }
+  if (a.id === 'gaps') { const rows = a.rows(at), k = w => rows.filter(x => x[2].startsWith(w)).length; return `${b(fmt(c) + ' obligations')} ${V('have', 'had')} no control with current proof ${when}. Of the ${rows.length} shown, ${k('None')} have no proof on file, ${k('Stale')} has proof that is out of date and ${k('Contradicted')} is contradicted by another document.`; }
+  if (a.id === 'inc') { const rows = a.rows(at), p = rows.filter(x => /pending/i.test(x[3])).length; return `${b(fmt(c) + ' customers')} were affected by INC-207, through 13 payments the ledger never received. Of the ${rows.length} shown, ${p} still have a reversal pending.`; }
+  if (a.id === 'policies') { const rows = a.rows(at); return `${b(fmt(c) + (c === 1 ? ' policy ' + V('is', 'was') : ' policies ' + V('are', 'were')))} past their review date ${when}. The most overdue ${V('is', 'was')} the ${rows[0][0]}, ${rows[0][3]} late, owned by ${rows[0][1]}.`; }
+  if (a.id === 'emails') { const p = ASK_WHO[r.who].pii; return `${b(fmt(c) + ' customers')} ${V('have', 'had')} an open complaint ${when}.${p === 'none' ? ` Their names and emails are hidden for a ${ASK_WHO[r.who].n.toLowerCase()}.` : p === 'partial' ? ' Emails are partly masked for your role.' : ' For your role, names show as initials and emails are hidden.'}`; }
+  if (a.id === 'c4471') return `Complaint ${b('#4471')} is handled by ${b('Sam Okafor')} in Customer Operations. If it is late, obligation 8.1.2 (final response within the deadline) under the consumer protection standard is at risk. Control C-121, the daily deadline report, is meant to catch it.`;
+  return '';
 }
 function askCopy(kind) {
   const r = S.ask.res, a = ASK.find(x => x.id === r.intent), args = {query_id: a.query, purpose: a.purpose, mode: r.plan.res.exportMode ? 'EXPORT' : 'READ', ...(r.at ? {as_of: ASOF[r.at][1]} : {})};
@@ -5023,7 +5060,7 @@ function sigBoard() {
   }
   return `<div class="card x15" id="sigCard"><div class="card-h"><h2>${ic('shield', 16)}Fraud and AML signals</h2>${st(fraud ? 'impl' : 'sim')}<span class="sub">${fraud ? 'Points and the review line are the engine\'s real rules. The payments are synthetic.' : 'Typologies come with the engine package. Cases are synthetic.'}</span></div><div class="card-b" style="display:grid;gap:14px">${tabs}${body}</div></div>`;
 }
-function streamSig() { clearTimeout(streamSig.h); S.sigN = 0; S.sigSel = null; rr(); const tick = () => { if (S.route !== 'engines' || S.engine !== 'fincrime' || S.sigLane !== 'fraud') { S.sigN = 99; return; } S.sigN++; rr(); if (S.sigN < FR_TX.length) streamSig.h = setTimeout(tick, reduce15() ? 0 : 340); else S.sigN = 99; }; streamSig.h = setTimeout(tick, 200); }
+function streamSig() { clearTimeout(streamSig.h); S.sigN = 0; S.sigSel = null; rr(); const tick = () => { if (held('sig', tick)) return; if (S.route !== 'engines' || S.engine !== 'fincrime' || S.sigLane !== 'fraud') { S.sigN = 99; return; } S.sigN++; rr(); if (S.sigN < FR_TX.length) streamSig.h = setTimeout(tick, reduce15() ? 0 : 340); else S.sigN = 99; }; streamSig.h = setTimeout(tick, 200); }
 
 /* ---------- 3. Graph explorer ---------- */
 const GX_N = {
@@ -5107,7 +5144,7 @@ function brkCard() {
   </div></div>`;
 }
 function brkRun(k) { clearTimeout(brkRun.h); S.brk = {fault: k, at: -1}; const f = BRK[k], end = f[1] == null ? 8 : f[1];
-  const tick = () => { if (S.route !== 'quality' || !S.eng) { S.brk.at = end; return; } S.brk.at++; rr(); if (S.brk.at < end) brkRun.h = setTimeout(tick, reduce15() ? 0 : 230); };
+  const tick = () => { if (held('brk', tick)) return; if (S.route !== 'quality' || !S.eng) { S.brk.at = end; return; } S.brk.at++; rr(); if (S.brk.at < end) brkRun.h = setTimeout(tick, reduce15() ? 0 : 230); };
   tick(); }
 
 /* ---------- extra engineering cards on existing pages ---------- */
@@ -5180,9 +5217,9 @@ function vTestLab() {
   </div></div>
   <p class="foot-note">Layer examples are real test names from the Glass runtime and its threat model. Golden cases follow the golden evidence pack themes in packages/golden-fixtures. Results here are replayed for the demo, not run live.</p>`;
 }
-function tlLayers(then) { tlStop(); S.tl.layers = 0; rr(); const tick = () => { if (S.route !== 'testlab') { S.tl.layers = TL_LAYERS.length; return; } S.tl.layers++; rr(); if (S.tl.layers < TL_LAYERS.length) tlLayers.h = setTimeout(tick, reduce15() ? 0 : 240); else if (then) then(); }; tlLayers.h = setTimeout(tick, 240); }
-function goldRun(then) { clearTimeout(goldRun.h); const i = S.tl.goldSel; delete S.tl.gold[i]; S.tl.goldAt = 0; rr(); const tick = () => { if (S.route !== 'testlab' || S.tl.goldSel !== i) { S.tl.gold[i] = true; S.tl.goldAt = -1; return; } S.tl.goldAt++; if (S.tl.goldAt >= TL_STAGES.length) { S.tl.gold[i] = true; S.tl.goldAt = -1; rr(); if (then) then(); return; } rr(); goldRun.h = setTimeout(tick, reduce15() ? 0 : 230); }; goldRun.h = setTimeout(tick, 230); }
-function atkRun() { clearTimeout(atkRun.h); S.tl.atk = 0; rr(); const tick = () => { if (S.route !== 'testlab') { S.tl.atk = TL_ATK.length; return; } S.tl.atk++; rr(); if (S.tl.atk < TL_ATK.length) atkRun.h = setTimeout(tick, reduce15() ? 0 : 200); }; atkRun.h = setTimeout(tick, 200); }
+function tlLayers(then) { tlStop(); S.tl.layers = 0; rr(); const tick = () => { if (held('tlL', tick)) return; if (S.route !== 'testlab') { S.tl.layers = TL_LAYERS.length; return; } S.tl.layers++; rr(); if (S.tl.layers < TL_LAYERS.length) tlLayers.h = setTimeout(tick, reduce15() ? 0 : 240); else if (then) then(); }; tlLayers.h = setTimeout(tick, 240); }
+function goldRun(then) { clearTimeout(goldRun.h); const i = S.tl.goldSel; delete S.tl.gold[i]; S.tl.goldAt = 0; rr(); const tick = () => { if (held('tlG', tick)) return; if (S.route !== 'testlab' || S.tl.goldSel !== i) { S.tl.gold[i] = true; S.tl.goldAt = -1; return; } S.tl.goldAt++; if (S.tl.goldAt >= TL_STAGES.length) { S.tl.gold[i] = true; S.tl.goldAt = -1; rr(); if (then) then(); return; } rr(); goldRun.h = setTimeout(tick, reduce15() ? 0 : 230); }; goldRun.h = setTimeout(tick, 230); }
+function atkRun() { clearTimeout(atkRun.h); S.tl.atk = 0; rr(); const tick = () => { if (held('tlA', tick)) return; if (S.route !== 'testlab') { S.tl.atk = TL_ATK.length; return; } S.tl.atk++; rr(); if (S.tl.atk < TL_ATK.length) atkRun.h = setTimeout(tick, reduce15() ? 0 : 200); }; atkRun.h = setTimeout(tick, 200); }
 function tlStop() { clearTimeout(tlLayers.h); clearTimeout(goldRun.h); clearTimeout(atkRun.h); }
 function stop15() { tlStop(); clearTimeout(streamSig.h); clearTimeout(brkRun.h); }
 
@@ -5446,14 +5483,28 @@ $('#drawerClose').addEventListener('click', closeDrawer);
 $('#tourBtn').addEventListener('click', () => tourTo(0));
 
 /* ---------- live simulation ---------- */
-function setLive() { const p = $('#livePill'); p.classList.toggle('stopped', S.stopped); p.classList.toggle('present', S.present && !S.stopped); $('#liveText').textContent = S.stopped ? 'Stopped' : S.present ? 'Presenting · frozen' : 'Live'; }
+function setLive() { const p = $('#livePill'); p.classList.toggle('stopped', S.stopped); p.classList.toggle('present', (S.present || S.paused) && !S.stopped); $('#liveText').textContent = S.stopped ? 'Stopped' : S.present ? 'Presenting · frozen' : S.paused ? 'Paused' : 'Live'; }
+// One pause for every moving part: CSS loops stop, SVG motion stops, and each scripted sequence parks its next step in HELD until play resumes.
+const HELD = new Map();
+const held = (key, fn) => { if (!S.paused) return false; HELD.set(key, fn); return true; };
+function paintMotion() {
+  const b = $('#livePill'), li = $('#liveIc'); if (li) li.innerHTML = ic(S.paused ? 'play' : 'pause', 11, 2.6); if (b) { b.classList.toggle('on', !!S.paused); b.setAttribute('aria-pressed', String(!!S.paused)); const t = S.paused ? 'Resume motion (P)' : 'Pause all motion (P)'; b.setAttribute('aria-label', t); b.title = t; }
+  const bar = $('#pausedBar'); if (bar) bar.hidden = !S.paused;
+  const f = $('#fxPauseBtn'); if (f) f.innerHTML = `${ic(S.paused ? 'play' : 'pause', 12)}<span id="fxPauseLbl">${S.paused ? 'Play' : 'Pause'}</span>`;
+}
+function setPaused(on) {
+  S.paused = on; document.documentElement.classList.toggle('paused', on);
+  document.querySelectorAll('svg').forEach(v => { try { on ? v.pauseAnimations() : v.unpauseAnimations(); } catch (e) {} });
+  paintMotion(); setLive();
+  if (!on) { const q = [...HELD.values()]; HELD.clear(); q.forEach((f, i) => setTimeout(f, i * 120)); }
+}
 function bump(f) {
   S.feed.unshift([now(), ...f]); S.feed.length = Math.min(S.feed.length, 30); S.feedNew = true;
   const el = $('#feed'); if (el) el.innerHTML = S.feed.map(feedRow).join('');
 }
 let fi = 8;
 setInterval(() => {
-  if (document.hidden || S.present) return;
+  if (document.hidden || S.present || S.paused) return;
   S.records += 300 + Math.floor(rnd() * 700);
   if (!S.stopped) S.actions += 2 + Math.floor(rnd() * 7);
   const r = $('#kRecords'), a = $('#kActions'); if (r) r.textContent = fmt(S.records); if (a) a.textContent = fmt(S.actions);
@@ -5503,7 +5554,7 @@ MO.observe($('#drawerBody'), {childList: true, subtree: true});
 MO.observe($('#view'), {childList: true, subtree: true});
 applyTheme();
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-cmdk],[data-themeset],[data-themecycle],[data-share],[data-print],[data-keys]'); if (!t) return;
+  const t = e.target.closest('[data-cmdk],[data-themeset],[data-themecycle],[data-share],[data-print],[data-keys],[data-motion]'); if (!t) return;
   const d = t.dataset;
   if (d.cmdk !== undefined) cmdOpen();
   else if (d.themeset) { setTheme(d.themeset); togglePop(false); }
@@ -5511,8 +5562,10 @@ document.addEventListener('click', e => {
   else if (d.share !== undefined) shareLink();
   else if (d.print !== undefined) { togglePop(false); setTimeout(() => window.print(), 80); }
   else if (d.keys !== undefined) { togglePop(false); openKeys(); }
+  else if (d.motion !== undefined) setPaused(!S.paused);
 });
 if (S.eng) { const b = $('#engBtn'); b.classList.add('on'); b.setAttribute('aria-pressed', 'true'); }
+paintMotion();
 document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('th-log')) S.libLogOpen = e.target.open; }, true);
 </script>
 
