@@ -1461,7 +1461,7 @@ html:not(.dk) .tip { background: #0E1838; }
   .rail, .top, .tour, .toast, .pop, .drawer, .scrim, .cmdk-scrim, .tip, .cp-btn, .fail-bar button, [data-play], [data-trplay], .uth-tabs { display: none !important; }
   .app { display: block; }
   #view { padding: 0; gap: 14px; }
-  #view::before { content: attr(data-print); display: block; font: 700 11px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: #555E7B; border-bottom: 1px solid #DDE2EE; padding-bottom: 8px; }
+  #view::before { content: attr(data-printhead); display: block; font: 700 11px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: #555E7B; border-bottom: 1px solid #DDE2EE; padding-bottom: 8px; }
   .card, .kpi, .uth, .stage, table, .code { break-inside: avoid; }
   .code.dark, .uth, .wf-bar, .ans-bar .t i, .kpi.accent, .stage.dark { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .code { max-height: none !important; overflow: visible !important; }
@@ -4672,7 +4672,7 @@ function skeletonFlash(ms = 560) {
 /* after every render: shareable link, print header, failure banner */
 function afterRender() {
   syncHash();
-  $('#view').dataset.print = `Glass simulation · ${CO[S.co].name} · ${TITLES[S.route]} · synthetic data · printed ${new Date().toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'})}`;
+  $('#view').dataset.printhead = `Glass simulation · ${CO[S.co].name} · ${TITLES[S.route]} · synthetic data · printed ${new Date().toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'})}`;
   const fb = failBar(); if (fb) $('#view').insertAdjacentHTML('afterbegin', fb);
   enhance($('#view'));
   if (S.route === 'ask' && S.ask.pending) { S.ask.pending = false; setTimeout(() => askRun(S.ask.q, true), 120); }
