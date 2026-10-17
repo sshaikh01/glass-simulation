@@ -1950,6 +1950,21 @@ button.xli:hover { border-color: var(--royal-200); }
 .lf.dark small, html.dk .lf.dark small { color: var(--royal); }
 .lf.dark b, html.dk .lf.dark b { color: var(--ink); }
 .lf.dark span, html.dk .lf.dark span, .anat-base span, html.dk .anat-base span, .base2 span, html.dk .base2 span { color: var(--muted); }
+/* v20: the brief, a plain summary at the top of each executive page */
+.xbrief { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 16px 20px 18px; display: grid; gap: 12px; }
+.xbrief-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.xbrief-k { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--royal); }
+.xbrief-h .xdet { margin-left: auto; gap: 5px; padding: 3px 11px; }
+.xbrief-lead { font-size: 16.5px; line-height: 1.55; color: var(--ink2); margin: 0; max-width: 1040px; }
+.xbrief-lead b, .xbp-t b { color: var(--ink); }
+.xbrief-pts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.xbp { display: grid; gap: 4px; align-content: start; text-align: left; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface); width: 100%; }
+button.xbp { transition: border-color .15s; }
+button.xbp:hover { border-color: var(--royal-200); }
+.xbp-k { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; color: var(--royal-d); }
+.xbp-k svg:last-child:not(:first-child) { margin-left: auto; opacity: .6; }
+.xbp-t { font-size: 12.5px; line-height: 1.45; color: var(--ink2); }
+@media print { .xbrief .xdet { display: none; } }
 </style>
 <div class="app">
   <aside class="rail">
@@ -5769,12 +5784,12 @@ const xPaying = () => xprogs().map(p => [p, xPH(p)]).filter(([, h]) => h.some(v 
 function xGrow() { return XMZ() ? {a: 'Active users', a0: 150, a1: 214, au: 'k', b: 'Employers', b0: 700, b1: 942, t0: 118, t1: 121} : {a: 'Active customers', a0: 280, a1: 352, au: 'k', b: 'Merchants', b0: 4100, b1: 5600, t0: 210, t1: 214}; }
 function xDecs() {
   return XMZ() ? [
-    {s: 'warn', t: 'Approve go-live: remittance partner', d: 'Evidence complete · waiting for you', go: 'governance', owner: 'CEO', wait: 1, ev: 14, imp: 'Opens a new corridor for about 4,200 customers already asking for it.'},
+    {s: 'warn', t: 'Approve go-live: remittance partner', d: 'Evidence complete · waiting for you', go: 'governance', owner: 'CEO', wait: 1, ev: 14, b: 'the remittance partner go-live', imp: 'Opens a new corridor for about 4,200 customers already asking for it.'},
     {s: 'bad', t: 'Article 8 gap: complaint records kept 3 years', d: 'Standard asks for 5 · fix drafted', go: 'engines', eng: 'compliance', owner: 'CCO, then CEO', wait: 3, ev: 6, imp: 'One update to the complaints framework closes 9 gaps at once.'},
     {s: 'blue', t: 'Fund the next tool', d: 'Fraud and mule detection · 78% reuse', x: 'prog:fraud', owner: 'CEO', wait: 5, ev: 3, imp: 'About 100 staff hours a month, built mostly from parts already on Glass.'},
     {s: 'warn', t: `${S.approvals} decisions with named owners`, d: 'Across all teams · none overdue', go: 'governance', owner: 'Team heads', wait: 0, ev: 31, imp: 'Each one has its evidence attached and a named person to decide.'},
   ] : [
-    {s: 'warn', t: 'Approve go-live: merchant cohort 4', d: 'Evidence complete · waiting for you', go: 'governance', owner: 'CEO', wait: 1, ev: 18, imp: '62 merchants ready to take payments.'},
+    {s: 'warn', t: 'Approve go-live: merchant cohort 4', d: 'Evidence complete · waiting for you', go: 'governance', owner: 'CEO', wait: 1, ev: 18, b: 'the go-live for merchant cohort 4', imp: '62 merchants ready to take payments.'},
     {s: 'bad', t: 'Reconciliation break RB-2291', d: '214 settlements without a ledger posting', go: 'engines', eng: 'recon', owner: 'Financial Controller', wait: 2, ev: 9, imp: 'Matched suggestions are drafted; a person posts the journal.'},
     {s: 'blue', t: 'Fund the next tool', d: 'KYC refresh · 77% reuse', x: 'prog:kyc', owner: 'CEO', wait: 5, ev: 3, imp: 'About 90 staff hours a month, built mostly from parts already on Glass.'},
     {s: 'warn', t: `${S.approvals} decisions with named owners`, d: 'Across all teams · none overdue', go: 'governance', owner: 'Team heads', wait: 0, ev: 27, imp: 'Each one has its evidence attached and a named person to decide.'},
@@ -5891,12 +5906,13 @@ function vCEO() {
   const fun = xFunnel(), ttl = xTTL();
   const comp = xComp();
   return `${head(`${CO[S.co].name} · executive view`, 'Where Glass is paying off', 'Value, programmes, growth and the decisions that need you, on one page. Click any card or number for the detail behind it.', `<div style="display:flex;gap:10px;align-items:center"><span class="xlive"><i></i>Live</span>${xRange()}<button class="btn" type="button" data-go="value">${ic('xcalc', 14)}Value calculator</button></div>`)}
+  ${xBriefCEO()}
   <div class="xk">
     ${xKpi('Hours given back', `${fmt(nowH)}`, `<span class="up">▲ ${Math.round((nowH / prevH - 1) * 100)}%</span> this month`, {accent: true, id: 'xHrs', xd: 'hours', tip: 'Hours given back|Staff hours the tools on Glass took off people this month. Click for the breakdown.'})}
     ${xKpi('Staff time', `${(nowH / XFTE).toFixed(1)} FTE`, 'equivalent, at 160 h a month', {xd: 'fte', tip: 'Staff time|Hours given back divided by 160 working hours a month. Click for the breakdown.'})}
     ${xKpi('Cost avoided', `${xmoney(cost)}`, `this month · at ${xcur(S.x.rate)}/h`, {xd: 'cost', tip: 'Cost avoided|Hours given back, valued at the hourly rate. Click for the breakdown.'})}
     ${xKpi('Tools on Glass', `${live + pilot}`, `${live} live · ${pilot} in pilot · ${P.length - live - pilot} next`, {xd: 'tools'})}
-    ${xKpi('Waiting for you', '4', 'decisions with evidence ready', {xd: 'decisions'})}
+    ${xKpi('Waiting for you', '3', `decisions with evidence ready · ${S.approvals} more with team heads`, {xd: 'decisions'})}
   </div>
   <div class="x2">
     ${xCard('Value delivered', 'hours given back · cumulative', `${xBars(xSlice(MONTHS), [{n: 'Hours given back', v: xSlice(hrs), c: 'var(--royal)'}], {line: {n: 'Cumulative', v: xSlice(cum), c: '#16B39A'}, h: 240, alt: 'Hours given back each month, with the cumulative total', fmt: v => fmt(v) + ' h', lfmt: v => fmt(v) + ' h'})}<div class="xleg"><span><i style="background:var(--royal)"></i>Hours each month</span><span><i style="background:#16B39A"></i>Cumulative · ${fmt(cum[cum.length - 1])} h · ${xmoney(cum[cum.length - 1] * S.x.rate)}</span></div>`, '', 'value')}
@@ -5930,6 +5946,7 @@ function vCTO() {
   const span = 16, now = 11.5, tlx = p => XTL[XMZ() ? 'myzoi' : 'halden'][p.id] || [p.start, p.end];
   const fresh = SOURCES.filter(s => s.status === 'ok').length;
   return `${head(`${CO[S.co].name} · technology view`, 'Platform health and delivery', 'What Glass is connected to, how it is behaving, what it costs to run, and what ships next. Click any card or number for the detail.', `<div style="display:flex;gap:10px;align-items:center"><span class="xlive"><i></i>Live</span><button class="btn" type="button" data-go="arch">${ic('cpu', 14)}Architecture</button></div>`)}
+  ${xBriefCTO()}
   <div class="xk">
     ${xKpi('Systems connected', `${SOURCES.length}`, `${fresh} healthy · read-only`, {xd: 'systems'})}
     ${xKpi('Records admitted today', fmt(S.records), 'after every quality gate', {accent: true, id: 'kRecords', xd: 'records'})}
@@ -6138,13 +6155,54 @@ const XD = {
 };
 function xDetail(k) { const f = XD[k]; if (f) f(); }
 
+/* ---------- the brief: the page in a few plain sentences, worked out from the same figures as the page ---------- */
+function xBrief(lead, pts, extra = '') {
+  return `<section class="xbrief" aria-label="Brief"><div class="xbrief-h"><span class="xbrief-k">${ic('doc', 14)}Brief</span><span class="sub">the page in 30 seconds</span><button class="xdet" type="button" data-xbcopy>${ic('copy', 12)}Copy</button></div>
+    <p class="xbrief-lead">${lead}</p>${extra}
+    <div class="xbrief-pts">${pts.map(([icn, k, t, xd]) => xd ? `<button class="xbp" type="button" data-xd="${xd}"><span class="xbp-k">${ic(icn, 13)}${k}${ic('chevron', 11)}</span><span class="xbp-t">${t}</span></button>` : `<div class="xbp"><span class="xbp-k">${ic(icn, 13)}${k}</span><span class="xbp-t">${t}</span></div>`).join('')}</div></section>`;
+}
+function xBriefCEO() {
+  const hrs = xHours(), n = hrs[11], up = Math.round((n / (hrs[10] || 1) - 1) * 100), P = xprogs(), live = P.filter(p => p.st === 'Live').length, pilot = P.filter(p => p.st === 'Pilot').length, full = xsum(P.map(p => p.hrs));
+  const g = xGrow(), need = Math.round(g.t0 * g.a1 / g.a0) - g.t1, stds = xStds(), weak = [...stds].sort((a, b) => a[1] - b[1])[0], D = xDecs();
+  return xBrief(`In October the tools on Glass gave back <b>${fmt(n)} staff hours</b>, the work of <b>${(n / XFTE).toFixed(1)} full-time people</b>, worth <b>${xmoney(n * S.x.rate)}</b>. That is up ${up}% on September, and <b>${fmt(xsum(hrs))} hours</b> over the last twelve months.`, [
+    ['xceo', 'Programmes', `${live} live and ${pilot} in pilot, out of ${P.length}. When all are live they give back <b>${fmt(full)} hours a month</b>, or ${(full / XFTE).toFixed(1)} full-time people.`, 'programmes'],
+    ['xusers', 'Growth', `${g.a} up ${Math.round((g.a1 / g.a0 - 1) * 100)}% while the team grew ${Math.round((g.t1 / g.t0 - 1) * 100)}%. About <b>${need} hires</b> were not needed.`, 'growth'],
+    ['shield', 'Compliance', `<b>80%</b> of requirements still valid across ${stds.length} standards, with ${XMZ() ? 21 : 18} gaps open. Weakest: ${weak[0].toLowerCase().replace(/^cbuae/, 'CBUAE')}, at ${weak[1]}%.`, 'compliance'],
+    ['scale', 'Your decisions', `<b>${D.length - 1} need you</b>, with the evidence ready, and ${S.approvals} more sit with team heads. First up: ${D[0].b}.`, 'decisions'],
+  ]);
+}
+function xBriefCTO() {
+  const {allowed, person, refused, p95} = xCtoData(), A = xsum(allowed), Pp = xsum(person), R = xsum(refused), tot = A + Pp + R;
+  const ok = SOURCES.filter(s => s.status === 'ok').length, issues = SOURCES.filter(s => s.status !== 'ok').map(s => s.name);
+  const t = xTools(), cost = xsum(t.map(x => x[1] * x[2])), back = xHours()[11] * S.x.rate;
+  const P = [...xprogs()].sort((a, b) => a.start - b.start), wk = [16, 10, 9, 7, 6, 5, 4, 3].slice(0, P.length), pilot = P.filter(p => p.st === 'Pilot').map(p => p.n);
+  return xBrief(`Glass is connected read-only to <b>${SOURCES.length} systems</b>, ${ok} of them healthy${issues.length ? `. ${issues.length} ${issues.length > 1 ? 'need' : 'needs'} attention: ${issues.join(', ')}` : ''}. In the last 14 days it checked <b>${fmt(tot)} actions</b>: ${Math.round(A / tot * 100)}% allowed by policy, ${fmt(Pp)} sent to a person and ${fmt(R)} refused. None went round it.`, [
+    ['check', 'Data quality', `<b>99.99%</b> of records pass every gate. 312 were held this month, each with a reason. Glass fixed none of them itself.`, 'quality'],
+    ['clock', 'Speed', `95% of answers in <b>${p95[13]} ms</b> or less, inside the 800 ms target, with every permission check on.`, 'latency'],
+    ['cpu', 'AI cost', `<b>${xmoney(cost)}</b> this month against <b>${xmoney(back)}</b> of staff time given back, about ${Math.round(back / cost)} times the spend.`, 'aicost'],
+    ['box', 'Reuse', `The newest tool reuses <b>${P[P.length - 1].reuse}%</b> of its parts. Build time fell from ${wk[0]} weeks to ${wk[wk.length - 1]}.`, 'reuse'],
+    ['play', 'Next', `${pilot.join(' and ')} ${pilot.length > 1 ? 'are' : 'is'} up for a go-live decision.`, 'timeline'],
+  ]);
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-xbcopy]'); if (!t) return;
+  const b = t.closest('.xbrief'), pts = [...b.querySelectorAll('.xbp')].map(p => `• ${p.querySelector('.xbp-k').innerText.trim()}: ${p.querySelector('.xbp-t').innerText.trim()}`);
+  copyText(`${CO[S.co].name} · ${TITLES[S.route]} · brief\n\n${b.querySelector('.xbrief-lead').innerText.trim()}\n\n${pts.join('\n')}`).then(ok => toast(ok ? 'Brief copied, ready to paste' : 'Copy failed'));
+});
+
 /* ---------- value calculator ---------- */
 const xRows = c => c.on.map(p => ({...p, back: p.h * S.x.share / 100, left: p.h * (1 - S.x.share / 100)}));
 function xBanner(c) {
-  const backPct = c.today ? c.back / c.today * 100 : 0;
-  return `<p class="xb-t">Today these <b>${c.on.length} processes</b> take <b>${fmt(c.today)} hours</b> of staff time a month. With Glass taking <b>${S.x.share}%</b> of the work, people get back <b>${fmt(Math.round(c.back))} hours</b>: the time of <b>${c.fte.toFixed(1)} full-time staff</b>, worth <b>${xmoney(c.month)}</b> a month.</p>
-    <div class="xb-bar" role="img" aria-label="${fmt(Math.round(c.back))} of ${fmt(c.today)} hours given back"><span class="g" style="width:${backPct.toFixed(1)}%" data-tip="Glass takes|${fmt(Math.round(c.back))} hours a month"><b>Glass takes ${fmt(Math.round(c.back))} h</b></span><span class="p" style="width:${(100 - backPct).toFixed(1)}%" data-tip="Stays with people|${fmt(Math.round(c.left))} hours a month: decisions, sign-off and the hard cases"><b>People ${fmt(Math.round(c.left))} h</b></span></div>
+  const backPct = c.today ? c.back / c.today * 100 : 0, top = xRows(c).sort((x, y) => y.back - x.back)[0], g = S.x.growth / 100;
+  const first = c.month * (1 / 3 + 2 / 3 + 10), wo3 = c.today / XFTE * Math.pow(1 + g, 3), wi3 = c.left / XFTE * Math.pow(1 + g, 3);
+  const bar = `<div class="xb-bar" role="img" aria-label="${fmt(Math.round(c.back))} of ${fmt(c.today)} hours given back"><span class="g" style="width:${backPct.toFixed(1)}%" data-tip="Glass takes|${fmt(Math.round(c.back))} hours a month"><b>Glass takes ${fmt(Math.round(c.back))} h</b></span><span class="p" style="width:${(100 - backPct).toFixed(1)}%" data-tip="Stays with people|${fmt(Math.round(c.left))} hours a month: decisions, sign-off and the hard cases"><b>People ${fmt(Math.round(c.left))} h</b></span></div>
     <div class="xb-leg"><span><i style="background:var(--royal)"></i>Glass does the routine work</span><span><i style="background:var(--line2)"></i>Stays with people: decisions, sign-off and the hard cases</span></div>`;
+  return xBrief(`Today these <b>${c.on.length} processes</b> take <b>${fmt(c.today)} hours</b> of staff time a month. With Glass taking <b>${S.x.share}%</b> of the work, people get back <b>${fmt(Math.round(c.back))} hours</b>: the time of <b>${c.fte.toFixed(1)} full-time staff</b>, worth <b>${xmoney(c.month)}</b> a month.`, [
+    ['xcalc', 'First year', `<b>${xmoney(first)}</b> while each process ramps up over three months, then <b>${xmoney(c.year)}</b> every year after.`],
+    ['xusers', 'Growth without hiring', `If the business grows ${S.x.growth}% a year, by year 3 this work needs <b>${wo3.toFixed(1)}</b> people without Glass and <b>${wi3.toFixed(1)}</b> with it.`],
+    ['sparkle', 'Biggest win', top ? `${top.n}: <b>${fmt(Math.round(top.back))} hours</b> a month given back.` : 'Tick a process to start.'],
+    ['user', 'What stays with people', `<b>${fmt(Math.round(c.left))} hours</b> a month of decisions, sign-off and the hard cases.`],
+  ], bar);
 }
 function xPeopleCalc(c) {
   const tot = Math.max(1, Math.ceil(c.today / XFTE)), back = Math.round(c.fte);
@@ -6164,7 +6222,7 @@ function xValueCharts(c) {
 function vValue() {
   const c = xCalc();
   return `${head(`${CO[S.co].name} · value calculator`, 'What Glass gives back', 'Tick the processes, set the hours, then adjust the sliders on the right. Every chart updates as you go.', `<button class="btn" type="button" data-x="calc-reset">${ic('play', 12)}Reset</button>`)}
-  <div class="xbanner" id="xvBan">${xBanner(c)}</div>
+  <div id="xvBan">${xBanner(c)}</div>
   <div class="xcalc">
     ${xCard('1 · Your processes', 'hours of staff time a month, today', `<div class="xproc">${S.x.procs.map((p, i) => `<div class="xpr${p.on ? '' : ' off'}" id="xpr${i}"><button class="tg${p.on ? ' on' : ''}" type="button" data-x="tog:${i}" aria-pressed="${p.on}" aria-label="Include ${esc(p.n)}" style="${p.on ? `background:${p.c};border-color:${p.c}` : ''}">${p.on ? ic('check', 13, 3) : ''}</button><b>${p.n}</b><input type="range" min="0" max="240" step="5" value="${p.h}" data-xin="h:${i}" aria-label="${esc(p.n)} hours a month"><span class="hv" id="xhv${i}">${p.h} h</span></div>`).join('')}</div>`)}
     <div style="display:grid;gap:16px">
