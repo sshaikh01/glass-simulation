@@ -1965,6 +1965,12 @@ button.xbp:hover { border-color: var(--royal-200); }
 .xbp-k svg:last-child:not(:first-child) { margin-left: auto; opacity: .6; }
 .xbp-t { font-size: 12.5px; line-height: 1.45; color: var(--ink2); }
 @media print { .xbrief .xdet { display: none; } }
+/* v21: chart band at the top of every platform page */
+.xvband { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin: 0 0 16px; }
+.xvband .xcard-b { display: grid; gap: 10px; align-content: start; }
+.xvband .xmini { margin-top: 2px; }
+.xvband.x4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .xvband.x4 { grid-template-columns: minmax(0, 1fr); } }
 </style>
 <div class="app">
   <aside class="rail">
@@ -5826,7 +5832,7 @@ function xBars(labels, sets, o = {}) {
       const y0 = stacked ? y(acc + v) : y(v), h = (stacked ? y(acc) : y(0)) - y0; acc += v;
       g += `<rect class="bar" x="${x.toFixed(1)}" y="${y0.toFixed(1)}" width="${Math.max(1, w - 1).toFixed(1)}" height="${Math.max(0, h).toFixed(1)}" rx="3" fill="${s.c}" style="animation-delay:${(.15 + i * .04).toFixed(2)}s"/>`;
     });
-    if (n <= 14 || i % 2 === 0) g += `<text class="ax" x="${(gx(i) + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${lb}</text>`;
+    if (i % (o.every || (n <= 14 ? 1 : 2)) === 0) g += `<text class="ax" x="${(gx(i) + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${lb}</text>`;
   });
   if (o.line) {
     const pts = o.line.v.map((v, i) => [gx(i) + bw / 2, P.t + ih - v / lmax * ih]);
@@ -5845,7 +5851,7 @@ function xLines(labels, sets, o = {}) {
   const x = i => P.l + i * iw / (n - 1), y = v => P.t + ih - (v - min) / (max - min || 1) * ih;
   let g = '';
   for (let k = 0; k <= 3; k++) { const v = min + (max - min) * k / 3, yy = y(v); g += `<line class="gl" x1="${P.l}" x2="${W - P.r}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}"/><text class="ax" x="${P.l - 6}" y="${(yy + 4).toFixed(1)}" text-anchor="end">${o.fmtA ? o.fmtA(v) : xk(v)}</text>`; }
-  labels.forEach((lb, i) => { if (n <= 14 || i % 2 === 0) g += `<text class="ax" x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="${i === 0 && o.edge ? 'start' : i === n - 1 && o.edge ? 'end' : 'middle'}">${lb}</text>`; });
+  labels.forEach((lb, i) => { if (i % (o.every || (n <= 14 ? 1 : 2)) === 0) g += `<text class="ax" x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="${i === 0 && o.edge ? 'start' : i === n - 1 && o.edge ? 'end' : 'middle'}">${lb}</text>`; });
   sets.forEach(s => {
     const pts = s.v.map((v, i) => [x(i), y(v)]), d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
     if (s.fill) g += `<path d="${d} L${pts[n - 1][0].toFixed(1)} ${P.t + ih} L${pts[0][0].toFixed(1)} ${P.t + ih} Z" fill="${s.c}" fill-opacity=".1"/>`;
@@ -6293,6 +6299,135 @@ document.addEventListener('input', e => {
 setInterval(() => { if (document.hidden || S.present || S.paused || S.route !== 'ceo') return; const el = $('#xHrs'); if (!el) return; const n = parseInt(el.textContent.replace(/,/g, ''), 10); if (isFinite(n) && rnd() < .5) el.textContent = fmt(n + 1); }, 3200);
 /* myZoi opens on the CEO view when no page is named in the link */
 if (!location.hash && S.co === 'myzoi') { try { history.replaceState(null, '', '#ceo'); } catch (e) { /* sandboxed frame */ } }
+
+/* ---------- v21: a band of charts near the top of every platform page, so each page leads with pictures, not prose ---------- */
+{ const _head = head; head = (...a) => _head(...a) + '<!--xvis-->'; }
+const xSeed = s => mulberry([...String(s)].reduce((a, c) => a * 31 + c.charCodeAt(0) | 0, 7));
+const xSer = (r, n, base, spread, drift = 0) => Array.from({length: n}, (_, i) => Math.max(0, Math.round(base * (1 + drift * i / n) + (r() - .5) * 2 * spread)));
+/* band charts are drawn at card size so their labels stay readable */
+const vBars = (l, s, o = {}) => xBars(l, s, {w: 440, every: l.length > 12 ? 2 : 1, ...o, h: (o.h || 210) + 20});
+const vLines = (l, s, o = {}) => xLines(l, s, {w: 440, every: l.length > 12 ? 2 : 1, ...o, h: (o.h || 200) + 20});
+const xBand = (...cards) => `<div class="xvband${cards.length === 4 ? ' x4' : ''}">${cards.join('')}</div>`;
+const xMini = items => `<div class="xmini">${items.map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+const xPairs = (rows, f = v => v) => { const m = Math.max(1, ...rows.map(r => r[1])); return `<div class="xpair">${rows.map(([n, a, b]) => `<div class="xpr2" data-tip="${esc(n)}|Before ${f(a)} · with Glass ${f(b)}"><span>${n}</span><span class="tr"><i class="t" style="width:${(a / m * 100).toFixed(1)}%"></i><i class="g" style="width:${Math.max(1.5, b / m * 100).toFixed(1)}%"></i></span><span class="n">${f(b)}<small>was ${f(a)}</small></span></div>`).join('')}</div>${xLeg([['Before', 'var(--line2)'], ['With Glass', 'var(--royal)']])}`; };
+const XPLACE = {overview: h => xAfterBlock(h, h.indexOf('<div class="kpis">')), engines: h => h.indexOf('<div class="card"><div class="card-h"><h2>Inside the')};
+function xAfterBlock(h, k) { if (k < 0) return -1; const re = /<div\b|<\/div>/g; re.lastIndex = k; let d = 0, t; while ((t = re.exec(h))) { d += t[0] === '</div>' ? -1 : 1; if (!d) return re.lastIndex; } return -1; }
+function xInsertBand(html, band, route) {
+  const at = XPLACE[route] ? XPLACE[route](html.replace('<!--xvis-->', '')) : -1;
+  if (at >= 0) { const h = html.replace('<!--xvis-->', ''); return h.slice(0, at) + band + h.slice(at); }
+  const i = html.indexOf('<!--xvis-->'); if (i < 0) return html;
+  const rest = html.slice(i + 11); let j = 0;
+  const m = rest.match(/^\s*<div class="(kpis|eng-grid)">/);
+  if (m) { const re = /<div\b|<\/div>/g; re.lastIndex = rest.indexOf('<div'); let d = 0, t; while ((t = re.exec(rest))) { d += t[0] === '</div>' ? -1 : 1; if (!d) { j = re.lastIndex; break; } } }
+  return html.slice(0, i) + rest.slice(0, j) + band + rest.slice(j);
+}
+
+/* engine-specific figures: before and with the engine, by step */
+const XENG = {
+  compliance: {steps: [['Find what changed', 16, .1], ['Map to obligations', 30, .3], ['Check the evidence', 24, .5], ['Review the answers', 18, 1.2], ['Draft the fixes', 8, .4]], unit: 'hours per review', out: ['Gaps confirmed', 'Answers settled', 'Sent to a person', 'Still open']},
+  complaints: {steps: [['Read and triage', 25, 2], ['Gather the facts', 40, 3], ['Work out redress', 20, 1], ['Draft the reply', 35, 4], ['Check quality', 15, 3]], unit: 'minutes per complaint', out: ['Resolved in time', 'Refund approved', 'Sent to the team lead', 'Still open']},
+  fincrime: {steps: [['Read the alert', 12, 1], ['Follow linked accounts', 45, 2], ['Gather evidence', 30, 3], ['Write the case', 40, 6], ['MLRO review', 20, 12]], unit: 'minutes per alert', out: ['Cleared with evidence', 'Escalated to a case', 'Sent to the MLRO', 'Still open']},
+  recon: {steps: [['Match settlements', 180, 2], ['Investigate breaks', 120, 15], ['Draft journals', 45, 5], ['Controller review', 30, 10]], unit: 'minutes per day', out: ['Matched automatically', 'Timing differences cleared', 'Sent to the controller', 'Still open']},
+};
+function xvEngines() {
+  const e = ENGINES.find(x => x.id === S.engine), X = XENG[e.id] || XENG.compliance, r = xSeed('eng' + e.id), d = days;
+  const t0 = xSer(r, 14, e.dec * .62, e.dec * .08, .15), t1 = xSer(r, 14, e.dec * .24, e.dec * .05, .1), t2 = xSer(r, 14, e.dec * .1, e.dec * .03), ref = xSer(r, 14, e.dec * .02, e.dec * .01);
+  const outs = [[X.out[0], Math.round(e.dec * .58), 'var(--royal)'], [X.out[1], Math.round(e.dec * .24), '#16B39A'], [X.out[2], Math.round(e.dec * .1), '#E2A23B'], [X.out[3], Math.round(e.dec * .08), 'var(--line2)']];
+  const work = e.ag.map((a, i) => [a, Math.max(2, Math.round(e.dec * (1.6 / (i + 1.6)) * (.7 + r() * .3) / 2.4))]).sort((a, b) => b[1] - a[1]).slice(0, 7);
+  const before = xsum(X.steps.map(s => s[1])), after = xsum(X.steps.map(s => s[2])), u = X.unit.split(' ')[0], fu = v => v >= 1 || u !== 'hours' ? `${+v.toFixed(1)} ${u === 'hours' ? 'h' : 'min'}` : `${Math.round(v * 60)} min`;
+  return xBand(
+    xCard(`${e.name}: proposals each day`, 'last 14 days, by who approves', `${vBars(d, [{n: 'Allowed by policy', v: t0, c: 'var(--royal)'}, {n: 'Checked by a verifier', v: t1, c: '#3AA0E8'}, {n: 'Decided by a person', v: t2, c: '#E2A23B'}, {n: 'Refused', v: ref, c: 'var(--bad)'}], {stack: true, h: 210, alt: 'Proposals each day by approval tier'})}${xLeg([['Policy', 'var(--royal)'], ['Verifier', '#3AA0E8'], ['Person', '#E2A23B'], ['Refused', 'var(--bad)']])}`),
+    xCard('What happened to today’s work', `${e.dec} proposals`, `<div class="xgauge">${xRing(outs, String(e.dec), 'today')}<div class="xrows">${outs.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${v}</strong></div>`).join('')}</div></div>${xMini([['Upheld by people', '98.9%'], ['Median to decide', e.id === 'recon' ? '9 min' : e.id === 'complaints' ? '41 min' : '2.4 h'], ['Agents', e.agents]])}`),
+    xCard('Time per case, before and with the engine', X.unit, `${xPairs(X.steps.map(s => [s[0], s[1], s[2]]), fu)}${xMini([['Before', fu(before)], ['With the engine', fu(after)], ['Faster', Math.round(before / after) + '×']])}`),
+    xCard('Workload today', 'proposals, by agent', xH(work.map(([n, v], i) => [n, v, XC[i % XC.length], `${v} proposals today`]))));
+}
+function xvOverview() {
+  const r = xSeed('ov'), d = days, recs = SOURCES.slice(0, 6), other = SOURCES.slice(6);
+  const sets = recs.map((s, i) => ({n: s.name, v: xSer(r, 14, s.today, s.today * .12, .1), c: XC[i]})).concat(other.length ? [{n: 'Other systems', v: xSer(r, 14, xsum(other.map(s => s.today)), 2000, .1), c: 'var(--line2)'}] : []);
+  const hrs = xHours(), tiers = [['Signed policy', 912, 'var(--royal)'], ['Verifier agent', 301, '#3AA0E8'], ['Named person', 71, '#E2A23B'], ['Refused', 14, 'var(--bad)']];
+  return xBand(
+    xCard('Records coming in', 'last 14 days, by system', `${vBars(d, sets, {stack: true, h: 210, alt: 'Records admitted each day by system'})}${xLeg(sets.map(s => [s.n, s.c]))}`),
+    xCard('Who approved today’s actions', '1,298 proposals', `<div class="xgauge">${xRing(tiers, '1,298', 'proposals')}<div class="xrows">${tiers.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${fmt(v)}</strong></div>`).join('')}</div></div>`),
+    xCard('Staff hours given back', 'each month', `${vBars(MONTHS, [{n: 'Hours given back', v: hrs, c: '#16B39A'}], {h: 210, fmt: v => fmt(v) + ' h', alt: 'Staff hours given back each month'})}${xMini([['This month', fmt(hrs[11]) + ' h'], ['Staff time', (hrs[11] / XFTE).toFixed(1) + ' FTE'], ['12 months', fmt(xsum(hrs)) + ' h']])}`));
+}
+function xvFlow() {
+  const st = [['Received from systems', 4612400], ['Passed every gate', 4612088], ['Linked into the ontology', 4580210], ['Feeding certified definitions', 3911500], ['Used by engines, apps and AI today', 1204300]];
+  const r = xSeed('flow'), lag = xSer(r, 14, 42, 9);
+  return xBand(
+    xCard('From raw records to governed use', 'today', xH(st.map(([n, v], i) => [n, v, i ? 'var(--royal)' : 'var(--line2)', `${fmt(v)} records`]), v => xk(v))),
+    xCard('Time from source to usable', 'median seconds, last 14 days', `${vLines(days, [{n: 'Median seconds', v: lag, c: 'var(--royal)', fill: true}], {h: 200, min: 0, fmt: v => v + ' s', fmtA: v => Math.round(v)})}${xMini([['Today', lag[13] + ' s'], ['Slowest source', 'Card processor'], ['Held, not guessed', '27']])}`));
+}
+function xvAsk() {
+  const r = xSeed('ask'), ans = xSer(r, 14, 340, 50, .2), held = xSer(r, 14, 22, 6), ref = xSer(r, 14, 9, 4), nm = xSer(r, 14, 14, 5);
+  const top = [['Complaints by product', 118], ['Complaints near their deadline', 96], ['Obligations without proof', 71], ['Active customers', 64], ['Unreconciled amount', 41], ['Policies overdue for review', 33]];
+  return xBand(
+    xCard('Questions answered each day', 'and what Glass did with them', `${vBars(days, [{n: 'Answered with sources', v: ans, c: 'var(--royal)'}, {n: 'Held, not guessed', v: held, c: 'var(--unk)'}, {n: 'Refused', v: ref, c: 'var(--bad)'}, {n: 'No published question fits', v: nm, c: 'var(--line2)'}], {stack: true, h: 200, alt: 'Questions each day by outcome'})}${xLeg([['Answered', 'var(--royal)'], ['Held', 'var(--unk)'], ['Refused', 'var(--bad)'], ['Not mapped', 'var(--line2)']])}`),
+    xCard('Most asked this week', 'times asked', xH(top.map(([n, v], i) => [n, v, XC[i]]))));
+}
+function xvSources() {
+  const r = xSeed('src'), fr = SOURCES.map(s => [s.name, parseInt(s.fresh) || 5, s.status === 'ok' ? 'var(--royal)' : s.status === 'warn' ? '#E2A23B' : 'var(--unk)']);
+  const health = [['Healthy', SOURCES.filter(s => s.status === 'ok').length, 'var(--good)'], ['Needs attention', SOURCES.filter(s => s.status === 'warn').length, '#E2A23B'], ['Held', SOURCES.filter(s => s.status === 'held').length, 'var(--unk)']].filter(x => x[1]);
+  return xBand(
+    xCard('Records today, by system', 'read-only', xH(SOURCES.map(s => [s.name, s.today, s.status === 'ok' ? 'var(--royal)' : s.status === 'warn' ? '#E2A23B' : 'var(--unk)']), v => xk(v))),
+    xCard('Health of every system', `${SOURCES.length} connected`, `<div class="xgauge">${xRing(health, String(SOURCES.length), 'systems')}<div class="xrows">${health.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${v}</strong></div>`).join('')}</div></div>${xMini([['Fresh on time', Math.round(health[0][1] / SOURCES.length * 100) + '%'], ['Write access', 'None'], ['New this month', '1']])}`),
+    xCard('How fresh each system is', 'minutes since last update', xH(fr, v => v + ' min')));
+}
+function xvQuality() {
+  const g = [['Required values', 96], ['Freshness', 54], ['Shape and type', 41], ['Duplicates', 39], ['Dates and times', 38], ['Units and currency', 22], ['Coverage', 17], ['Version clash', 5]], r = xSeed('q'), qd = xSer(r, 14, 22, 8), pr = days.map(() => +(99.985 + r() * .012).toFixed(3));
+  return xBand(
+    xCard('Which check caught each problem', '312 records held this month', xH(g.map(([n, v]) => [n, v, '#E2A23B', `${v} records held`]))),
+    xCard('Held each day', 'records quarantined with a reason', `${vBars(days, [{n: 'Held', v: qd, c: '#E2A23B'}], {h: 190, alt: 'Records held each day'})}${xMini([['Pass rate', '99.99%'], ['Fixed at source', '92%'], ['Fixed by Glass', '0']])}`),
+    xCard('Pass rate', 'share passing every gate', vLines(days, [{n: 'Pass rate', v: pr, c: 'var(--good)', fill: true}], {h: 230, min: 99.97, fmt: v => v.toFixed(3) + '%', fmtA: v => v.toFixed(2) + '%'})));
+}
+function xvOntology() {
+  const ents = [['Transaction', 3120000], ['Account', 412000], ['Customer', 298000], ['Card', 240000], ['Complaint', 18400], ['Evidence', 2970], ['Control', 640], ['Obligation', 512]];
+  const r = xSeed('onto'), links = MONTHS.map((_, i) => Math.round(9.1e6 * (1 + .9 * i / 11) + r() * 2e5));
+  const match = [['One system only', 41, 'var(--line2)'], ['Two systems', 33, '#3AA0E8'], ['Three systems', 18, 'var(--royal)'], ['Four or more', 8, '#16B39A']];
+  return xBand(
+    xCard('What the map holds', 'things of each kind', xH(ents.map(([n, v], i) => [n, v, XC[i % XC.length], `${fmt(v)}`]), v => xk(v))),
+    xCard('Links between things', 'growing every month', `${vLines(MONTHS, [{n: 'Links', v: links, c: 'var(--royal)', fill: true}], {h: 200, min: 0, fmt: v => xk(v), alt: 'Links in the ontology'})}${xMini([['Links today', xk(links[11])], ['Entity types', '15'], ['Merges reviewed', '598']])}`),
+    xCard('One customer, many systems', 'share of customers found in', `<div class="xgauge">${xRing(match, '298k', 'customers', {fmt: v => v + '%'})}<div class="xrows">${match.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${v}%</strong></div>`).join('')}</div></div>`));
+}
+function xvSemantic() {
+  const st = [['Certified', 38, 'var(--good)'], ['Draft', 3, '#E2A23B'], ['Retired', 1, 'var(--line2)']];
+  const use = DEFS.slice(0, 7).map((d, i) => [d.name, [412, 388, 301, 260, 214, 133, 96][i] || 50]);
+  const r = xSeed('sem'), dis = xSer(r, 12, 9, 3, -.8);
+  return xBand(
+    xCard('Definitions', '42 in use', `<div class="xgauge">${xRing(st, '42', 'definitions')}<div class="xrows">${st.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${v}</strong></div>`).join('')}</div></div>${xMini([['Each has an owner', '100%'], ['Versions this year', '17'], ['Used by', '31 outputs']])}`),
+    xCard('Most used definitions', 'calls today', xH(use.map(([n, v], i) => [n, v, XC[i % XC.length], `${v} calls today`]))),
+    xCard('Figures that disagreed', 'between two reports, each month', `${vBars(MONTHS, [{n: 'Disagreements found', v: dis, c: 'var(--bad)'}], {h: 200, alt: 'Disagreements between reports each month'})}<p class="xnote" style="margin-top:8px">${ic('check', 13)}<span>Once a figure has one certified definition, reports stop disagreeing.</span></p>`));
+}
+function xvLibrary() {
+  const c = libCounts(), h = [['Ready to rely on', 2812 + c.fixed, 'var(--good)'], ['Stale', 64, '#E2A23B'], ['Broken link', 21, 'var(--bad)'], ['Duplicate', 38, 'var(--line2)'], ['Contradiction', 9, '#8B6CF6'], ['No owner', 26, 'var(--unk)']];
+  const r = xSeed('lib'), w = XWEEKS, a0 = xSer(r, 8, 14, 4, .8), a1 = xSer(r, 8, 6, 2, .5), a2 = xSer(r, 8, 5, 2), mt = [9.5, 7.8, 6.1, 4.4, 3.2, 2.3, 1.6, 1.2];
+  return xBand(
+    xCard('Health of 2,970 documents', 'right now', `<div class="xgauge">${xRing(h, '95%', 'ready')}<div class="xrows">${h.map(([n, v, cc]) => `<div class="xrow"><i style="background:${cc}"></i><span>${n}</span><strong>${fmt(v)}</strong></div>`).join('')}</div></div>`),
+    xCard('Problems fixed each week', 'and who approved them', `${vBars(w, [{n: 'Fixed by policy', v: a0, c: 'var(--royal)'}, {n: 'Checked by a verifier', v: a1, c: '#3AA0E8'}, {n: 'Approved by the owner', v: a2, c: '#E2A23B'}], {stack: true, h: 200, line: {n: 'Median days to fix', v: mt, c: 'var(--bad)'}, lfmt: v => v + ' days', alt: 'Problems fixed each week'})}${xLeg([['Policy', 'var(--royal)'], ['Verifier', '#3AA0E8'], ['Owner', '#E2A23B'], ['Days to fix', 'var(--bad)']])}`));
+}
+function xvAgents() {
+  const A = AGENTS, r = xSeed('ag'), refuse = [['Asked for data outside its role', 41], ['Tried to approve its own work', 6], ['Asked to export', 12], ['Over its policy limit', 23]];
+  return xBand(
+    xCard('Work done today, by agent', `${A.length} of 25 agents shown`, xH(A.map((a, i) => [a.name, a.today, XC[i % XC.length], `${fmt(a.today)} actions today · for ${a.serves}`]), v => fmt(v))),
+    xCard('How often people overrode the agent', 'share of its proposals a person changed or rejected', xH(A.filter(a => a.ok !== '—').map((a, i) => [a.name, +(100 - parseFloat(a.ok)).toFixed(1), (100 - parseFloat(a.ok)) > 2 ? '#E2A23B' : 'var(--royal)', `Upheld ${a.ok} · overridden ${(100 - parseFloat(a.ok)).toFixed(1)}%`]), v => v + '%') + `<p class="xnote" style="margin-top:4px">${ic('check', 13)}<span>Every override is kept and used to test the next version of the agent.</span></p>`),
+    xCard('What Glass stopped agents doing', 'this week', xH(refuse.map(([n, v]) => [n, v, 'var(--bad)', `${v} refused`]))));
+}
+function xvOutputs() {
+  const r = xSeed('out'), app = xSer(r, 14, 6200, 700, .2), api = xSer(r, 14, 3900, 500, .2), mcp = xSer(r, 14, 1600, 300, .5), ev = xSer(r, 14, 700, 120);
+  const users = [['Complaints cockpit', 3100], ['Board risk pack', 410], ['Claude via MCP', 1600], ['Partner portal API', 2400], ['Finance dashboard', 1500], ['Event stream to the data warehouse', 700]];
+  return xBand(
+    xCard('Governed calls each day', 'by channel', `${vBars(days, [{n: 'Applications', v: app, c: 'var(--royal)'}, {n: 'APIs', v: api, c: '#3AA0E8'}, {n: 'AI assistants (MCP)', v: mcp, c: '#8B6CF6'}, {n: 'Events and exports', v: ev, c: '#16B39A'}], {stack: true, h: 210, alt: 'Calls each day by channel'})}${xLeg([['Apps', 'var(--royal)'], ['APIs', '#3AA0E8'], ['MCP', '#8B6CF6'], ['Events', '#16B39A']])}`),
+    xCard('Busiest outputs today', 'calls', xH(users.map(([n, v], i) => [n, v, XC[i % XC.length]]), v => fmt(v))));
+}
+function xvGovernance() {
+  const r = xSeed('gov'), t0 = xSer(r, 14, 880, 70, .1), t1 = xSer(r, 14, 290, 40), t2 = xSer(r, 14, 68, 12), rf = xSer(r, 14, 13, 4);
+  const who = [['Complaints Team Lead', 2.1], ['Financial Controller', 3.4], ['Chief Compliance Officer', 6.8], ['Head of Compliance Data', 4.2], ['MLRO', 5.5]];
+  return xBand(
+    xCard('Approvals each day', 'by who approved', `${vBars(days, [{n: 'Signed policy', v: t0, c: 'var(--royal)'}, {n: 'Verifier agent', v: t1, c: '#3AA0E8'}, {n: 'Named person', v: t2, c: '#E2A23B'}, {n: 'Refused', v: rf, c: 'var(--bad)'}], {stack: true, h: 210, alt: 'Approvals each day by tier'})}${xLeg([['Policy', 'var(--royal)'], ['Verifier', '#3AA0E8'], ['Person', '#E2A23B'], ['Refused', 'var(--bad)']])}`),
+    xCard('How long people take to decide', 'median hours, last 30 days', `${xH(who.map(([n, v]) => [n, v, v > 5 ? '#E2A23B' : 'var(--royal)']), v => v + ' h')}${xMini([['Overdue', '0'], ['Decided today', '58'], ['Expired unused', '3']])}`));
+}
+const XVIS = {overview: xvOverview, flow: xvFlow, ask: xvAsk, sources: xvSources, quality: xvQuality, ontology: xvOntology, semantic: xvSemantic, library: xvLibrary, engines: xvEngines, agents: xvAgents, outputs: xvOutputs, governance: xvGovernance};
+for (const [k, f] of Object.entries(XVIS)) { const v = VIEWS[k]; if (v) VIEWS[k] = (...a) => xInsertBand(v(...a), f(), k); }
+for (const [k, v] of Object.entries(VIEWS)) if (!XVIS[k]) VIEWS[k] = (...a) => v(...a).replace('<!--xvis-->', '');
 
 const [start, startQs] = parseHash(); applyParams(start, startQs);
 S.route = start;
