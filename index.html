@@ -1971,6 +1971,53 @@ button.xbp:hover { border-color: var(--royal-200); }
 .xvband .xmini { margin-top: 2px; }
 .xvband.x4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 1000px) { .xvband.x4 { grid-template-columns: minmax(0, 1fr); } }
+/* v22: intro info button, case player in three lanes, tabs on long pages */
+.xinfo { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--royal-d); padding: 0; vertical-align: -4px; margin-left: 4px; cursor: help; }
+.xinfo:hover, .xinfo:focus-visible { border-color: var(--royal-200); background: var(--royal-50); }
+@media print { .xinfo { display: none; } }
+.xc-clocks { display: grid; gap: 8px; margin-bottom: 14px; }
+.xc-clk { display: grid; grid-template-columns: 150px minmax(0, 1fr) 96px; gap: 12px; align-items: center; font-size: 13px; font-weight: 700; color: var(--ink2); }
+.xc-clk .tr { height: 14px; border-radius: 999px; background: var(--sunken); overflow: hidden; }
+.xc-clk .tr i { display: block; height: 100%; border-radius: 999px; background: var(--royal); transition: width .6s cubic-bezier(.2,.7,.2,1); }
+.xc-clk.hand .tr i { background: var(--faint); }
+.xc-clk b { text-align: right; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.xc-lanes { display: grid; grid-template-columns: 170px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.xc-lh { display: grid; grid-template-rows: repeat(3, 1fr); border-right: 1px solid var(--line); }
+.xc-lh span { display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 12px; font-weight: 800; color: var(--ink2); }
+.xc-lh span + span, .xc-track::before { border-top: 1px solid var(--line); }
+.xc-lh .ag { color: var(--royal-d); } .xc-lh .gw { color: var(--ink2); } .xc-lh .person { color: #B7791F; }
+.xc-track { position: relative; height: 220px; background: linear-gradient(var(--surface) 0 33.33%, var(--sunken) 33.33% 66.66%, var(--surface) 66.66%); }
+.xc-track svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.xc-p0 { fill: none; stroke: var(--line2); stroke-width: 2; stroke-dasharray: 5 6; vector-effect: non-scaling-stroke; }
+.xc-p1 { fill: none; stroke: var(--royal); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.xc-n { position: absolute; transform: translate(-50%, -50%); border: 0; background: none; padding: 0; display: grid; justify-items: center; gap: 2px; cursor: pointer; }
+.xc-n .d { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; background: var(--surface); border: 2px solid var(--line2); color: var(--faint); transition: all .25s; }
+.xc-n .l { font-size: 10.5px; font-weight: 800; color: var(--faint); }
+.xc-n.done .d { border-color: var(--royal-200); color: var(--royal-d); background: var(--royal-50); }
+.xc-n.person.done .d { border-color: #E2A23B; color: #B7791F; background: var(--warn-bg); }
+.xc-n.now .d { width: 46px; height: 46px; border-color: var(--royal); background: var(--royal); color: #fff; box-shadow: 0 0 0 6px var(--royal-50); }
+.xc-n.person.now .d { border-color: #E2A23B; background: #E2A23B; box-shadow: 0 0 0 6px var(--warn-bg); }
+.xc-n.gw.now .d { border-color: var(--ink); background: var(--ink); color: var(--surface); box-shadow: 0 0 0 6px var(--sunken); }
+.xc-n.now .l, .xc-n.done .l { color: var(--ink2); }
+.xc-n:hover .d { border-color: var(--royal); }
+.xc-card { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: start; margin-top: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.xc-card .xc-big { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--royal-50); color: var(--royal); }
+.xc-card.person .xc-big { background: var(--warn-bg); color: #B7791F; } .xc-card.gw .xc-big { background: var(--sunken); color: var(--ink); } .xc-card.fin .xc-big { background: var(--good-bg); color: var(--good); }
+.xc-card small { display: block; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.xc-card b { display: block; font-size: 15px; margin-top: 2px; }
+.xc-card p { font-size: 13px; color: var(--ink2); margin: 4px 0 0; line-height: 1.5; }
+.xc-card .chips { margin-top: 8px; align-items: center; }
+.xc-k { font-size: 11px; font-weight: 800; color: var(--muted); margin-right: 2px; }
+.xc-t { display: grid; gap: 6px; min-width: 110px; }
+.xc-t span { border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+.xc-t small { font-size: 10.5px; } .xc-t b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.xc-t span:last-child b { color: var(--muted); }
+.xc-x { text-align: right; } .xc-x b { font-size: 30px; color: var(--good); } .xc-x span { font-size: 12px; color: var(--muted); font-weight: 700; }
+.xc-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+.xtabs { display: flex; gap: 4px; flex-wrap: wrap; background: var(--sunken); border-radius: 12px; padding: 4px; margin: 0 0 14px; }
+.xtabs button { border: 0; background: none; border-radius: 9px; padding: 8px 14px; font-size: 13px; font-weight: 800; color: var(--ink2); }
+.xtabs button.on { background: var(--surface); color: var(--royal-d); box-shadow: 0 1px 3px rgba(13,21,48,.12); }
+@media (max-width: 760px) { .xc-lanes { grid-template-columns: 44px minmax(0, 1fr); } .xc-lh span { font-size: 0; justify-content: center; padding: 0; } .xc-lh span svg { width: 16px; height: 16px; } .xc-clk { grid-template-columns: 96px minmax(0, 1fr) 72px; font-size: 12px; } .xc-card { grid-template-columns: 36px minmax(0, 1fr); } .xc-card .xc-t, .xc-card .xc-x { grid-column: 2; display: flex; gap: 8px; } .xc-n .d { width: 30px; height: 30px; font-size: 10px; } .xc-n.now .d { width: 36px; height: 36px; } }
 </style>
 <div class="app">
   <aside class="rail">
@@ -5847,7 +5894,7 @@ function xBars(labels, sets, o = {}) {
 }
 function xLines(labels, sets, o = {}) {
   const W = o.w || 640, H = o.h || 220, P = {l: 44, r: 12, t: 12, b: 26}, iw = W - P.l - P.r, ih = H - P.t - P.b, n = labels.length;
-  const all = sets.flatMap(s => s.v), min = o.min != null ? o.min : Math.min(...all) * .92, max = Math.max(...all) * 1.06;
+  const all = sets.flatMap(s => s.v), min = o.min != null ? o.min : Math.min(...all) * .92, max = o.max != null ? o.max : Math.max(...all) * 1.06;
   const x = i => P.l + i * iw / (n - 1), y = v => P.t + ih - (v - min) / (max - min || 1) * ih;
   let g = '';
   for (let k = 0; k <= 3; k++) { const v = min + (max - min) * k / 3, yy = y(v); g += `<line class="gl" x1="${P.l}" x2="${W - P.r}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}"/><text class="ax" x="${P.l - 6}" y="${(yy + 4).toFixed(1)}" text-anchor="end">${o.fmtA ? o.fmtA(v) : xk(v)}</text>`; }
@@ -5981,7 +6028,7 @@ function vCTO() {
 
 /* ---------- side panels: the detail behind every executive card and number ---------- */
 const xT = rows => `<div class="xout">${rows.map(([k, v, d, a]) => `<div class="xo${a ? ' accent' : ''}"><small>${k}</small><b style="font-size:24px">${v}</b><span>${d}</span></div>`).join('')}</div>`;
-const xH = (rows, f = fmt) => { const m = Math.max(1, ...rows.map(r => r[1])); return `<div class="xfun wide">${rows.map(([n, v, c, tip]) => `<div class="xf" data-tip="${esc(n)}|${esc(tip || f(v))}"><span title="${esc(n)}">${n}</span><span class="tr"><i style="width:${(v / m * 100).toFixed(1)}%${c ? `;background:${c}` : ''}"></i></span><span class="n">${f(v)}</span></div>`).join('')}</div>`; };
+const xH = (rows, f = fmt, mx) => { const m = mx || Math.max(1, ...rows.map(r => r[1])); return `<div class="xfun wide">${rows.map(([n, v, c, tip]) => `<div class="xf" data-tip="${esc(n)}|${esc(tip || f(v))}"><span title="${esc(n)}">${n}</span><span class="tr"><i style="width:${(v / m * 100).toFixed(1)}%${c ? `;background:${c}` : ''}"></i></span><span class="n">${f(v)}</span></div>`).join('')}</div>`; };
 const xS = (t, sub) => `<div class="section-t">${t}${sub ? ` <span class="xs-sub">${sub}</span>` : ''}</div>`;
 const xLeg = items => `<div class="xleg">${items.map(([n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join('')}</div>`;
 const xGo = (label, route, eng, primary) => `<button class="btn${primary ? ' primary' : ''}" type="button" data-go="${route}"${eng ? ` data-engine="${eng}"` : ''}>${ic('play', 12)}${label}</button>`;
@@ -6373,11 +6420,11 @@ function xvSources() {
     xCard('How fresh each system is', 'minutes since last update', xH(fr, v => v + ' min')));
 }
 function xvQuality() {
-  const g = [['Required values', 96], ['Freshness', 54], ['Shape and type', 41], ['Duplicates', 39], ['Dates and times', 38], ['Units and currency', 22], ['Coverage', 17], ['Version clash', 5]], r = xSeed('q'), qd = xSer(r, 14, 22, 8), pr = days.map(() => +(99.985 + r() * .012).toFixed(3));
+  const g = [['Required values', 96], ['Freshness', 54], ['Shape and type', 41], ['Duplicates', 39], ['Dates and times', 38], ['Units and currency', 22], ['Coverage', 17], ['Version clash', 5]];
+  const fate = [['Fixed at the source, then admitted', 287, 'var(--good)'], ['Replaced by the owner', 16, 'var(--royal)'], ['Still with the owner', 9, '#E2A23B']];
   return xBand(
     xCard('Which check caught each problem', '312 records held this month', xH(g.map(([n, v]) => [n, v, '#E2A23B', `${v} records held`]))),
-    xCard('Held each day', 'records quarantined with a reason', `${vBars(days, [{n: 'Held', v: qd, c: '#E2A23B'}], {h: 190, alt: 'Records held each day'})}${xMini([['Pass rate', '99.99%'], ['Fixed at source', '92%'], ['Fixed by Glass', '0']])}`),
-    xCard('Pass rate', 'share passing every gate', vLines(days, [{n: 'Pass rate', v: pr, c: 'var(--good)', fill: true}], {h: 230, min: 99.97, fmt: v => v.toFixed(3) + '%', fmtA: v => v.toFixed(2) + '%'})));
+    xCard('What happened to held records', 'this month', `<div class="xgauge">${xRing(fate, '312', 'held')}<div class="xrows">${fate.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${v}</strong></div>`).join('')}</div></div>${xMini([['Fixed by Glass itself', '0'], ['Median time to fix', '6 h'], ['Guessed values', 'None']])}`));
 }
 function xvOntology() {
   const ents = [['Transaction', 3120000], ['Account', 412000], ['Customer', 298000], ['Card', 240000], ['Complaint', 18400], ['Evidence', 2970], ['Control', 640], ['Obligation', 512]];
@@ -6407,7 +6454,7 @@ function xvLibrary() {
 function xvAgents() {
   const A = AGENTS, r = xSeed('ag'), refuse = [['Asked for data outside its role', 41], ['Tried to approve its own work', 6], ['Asked to export', 12], ['Over its policy limit', 23]];
   return xBand(
-    xCard('Work done today, by agent', `${A.length} of 25 agents shown`, xH(A.map((a, i) => [a.name, a.today, XC[i % XC.length], `${fmt(a.today)} actions today · for ${a.serves}`]), v => fmt(v))),
+    xCard('25 agents across four engines', 'each works for a named person', (() => { const parts = ENGINES.map((e, i) => [e.name, e.agents, XC[i]]); return `<div class="xgauge">${xRing(parts, '25', 'agents')}<div class="xrows">${parts.map(([n, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${n}</span><strong>${v}</strong></div>`).join('')}</div></div>${xMini([['Actions today', fmt(xsum(A.map(a => a.today)))], ['With a human owner', '25 of 25'], ['Can approve', 'None']])}`; })()),
     xCard('How often people overrode the agent', 'share of its proposals a person changed or rejected', xH(A.filter(a => a.ok !== '—').map((a, i) => [a.name, +(100 - parseFloat(a.ok)).toFixed(1), (100 - parseFloat(a.ok)) > 2 ? '#E2A23B' : 'var(--royal)', `Upheld ${a.ok} · overridden ${(100 - parseFloat(a.ok)).toFixed(1)}%`]), v => v + '%') + `<p class="xnote" style="margin-top:4px">${ic('check', 13)}<span>Every override is kept and used to test the next version of the agent.</span></p>`),
     xCard('What Glass stopped agents doing', 'this week', xH(refuse.map(([n, v]) => [n, v, 'var(--bad)', `${v} refused`]))));
 }
@@ -6425,8 +6472,169 @@ function xvGovernance() {
     xCard('Approvals each day', 'by who approved', `${vBars(days, [{n: 'Signed policy', v: t0, c: 'var(--royal)'}, {n: 'Verifier agent', v: t1, c: '#3AA0E8'}, {n: 'Named person', v: t2, c: '#E2A23B'}, {n: 'Refused', v: rf, c: 'var(--bad)'}], {stack: true, h: 210, alt: 'Approvals each day by tier'})}${xLeg([['Policy', 'var(--royal)'], ['Verifier', '#3AA0E8'], ['Person', '#E2A23B'], ['Refused', 'var(--bad)']])}`),
     xCard('How long people take to decide', 'median hours, last 30 days', `${xH(who.map(([n, v]) => [n, v, v > 5 ? '#E2A23B' : 'var(--royal)']), v => v + ' h')}${xMini([['Overdue', '0'], ['Decided today', '58'], ['Expired unused', '3']])}`));
 }
-const XVIS = {overview: xvOverview, flow: xvFlow, ask: xvAsk, sources: xvSources, quality: xvQuality, ontology: xvOntology, semantic: xvSemantic, library: xvLibrary, engines: xvEngines, agents: xvAgents, outputs: xvOutputs, governance: xvGovernance};
-for (const [k, f] of Object.entries(XVIS)) { const v = VIEWS[k]; if (v) VIEWS[k] = (...a) => xInsertBand(v(...a), f(), k); }
+const XVIS = {overview: xvOverview, flow: xvFlow, ask: xvAsk, quality: xvQuality, ontology: xvOntology, semantic: xvSemantic, library: xvLibrary, engines: xvEngines, agents: xvAgents, outputs: xvOutputs, governance: xvGovernance};
+
+/* ---------- v22: charts on the engineering pages, a clearer case player, the autonomous loop, and a clutter pass ---------- */
+
+/* page intros: the first sentence stays; the rest moves behind an ⓘ so pages lead with pictures */
+{ const _head = head; head = (eyebrow, title, lede, right) => { const parts = String(lede).split(/(?<=[.!?])\s+(?=[A-Z"“])/), more = parts.slice(1).join(' ');
+  return _head(eyebrow, title, parts[0] + (more ? ` <button class="xinfo" type="button" data-tip="${esc(title)}|${esc(more)}" aria-label="More about this page">${ic('info', 13)}</button>` : ''), right); }; }
+if (!I.info) I.info = '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>';
+
+/* remove cards that now repeat a chart above them */
+const XDROP = {overview: ['Records received today, by source']};
+function xDropCards(h, titles) {
+  for (const t of titles) { const k = h.indexOf(`<h2>${t}</h2>`); if (k < 0) continue; const c = h.lastIndexOf('<div class="card">', k), e = xAfterBlock(h, c); if (c >= 0 && e > c) h = h.slice(0, c) + h.slice(e); }
+  return h;
+}
+
+/* engineering pages */
+function xvArch() {
+  const n = {impl: 0, sim: 0, plan: 0}; Object.values(ACMP).forEach(c => { n[c[5]] = (n[c[5]] || 0) + 1; });
+  const st = [['Built and tested', n.impl, 'var(--royal)'], ['Simulated on this page', n.sim, '#E2A23B'], ['Planned', n.plan, 'var(--line2)']];
+  const steps = TR.ok.steps, tot = xsum(steps.map(s => s[2])), ms = steps.map(s => [s[0], Math.max(1, Math.round(s[2] / tot * 227))]);
+  const calls = [['Query service', 12400], ['REST API', 9800], ['Event delivery', 18200], ['MCP server', 1600], ['Gateway', 1298], ['Gateway worker', 338]];
+  return xBand(
+    xCard('Components', `${Object.keys(ACMP).length} on the diagram`, `<div class="xgauge">${xRing(st, String(Object.keys(ACMP).length), 'components')}<div class="xrows">${st.map(([k, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${k}</span><strong>${v}</strong></div>`).join('')}</div></div>`),
+    xCard('Calls through each service today', 'synthetic volumes', xH(calls.sort((a, b) => b[1] - a[1]).map(([k, v], i) => [k, v, XC[i]]), v => xk(v))),
+    xCard('Where a typical answer spends its time', 'median 227 ms, split by check', xH(ms.map(([k, v]) => [k, v, k === 'permittedEdges' ? '#8B6CF6' : 'var(--royal)']), v => v + ' ms')));
+}
+function xvTrace() {
+  const out = [['Answered with sources', 11920, 'var(--royal)'], ['Held, not guessed', 214, 'var(--unk)'], ['Refused', 268, 'var(--bad)'], ['Sent to a person', 22, '#E2A23B']];
+  const r = xSeed('trace'), hrs = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0')), per = hrs.map((_, i) => Math.round(520 * (.35 + .65 * Math.max(0, Math.sin((i - 6) / 24 * Math.PI * 2 - Math.PI / 2) * -1 + .3)) + r() * 60));
+  const why = [['Outside the person’s access', 131], ['Export not permitted', 58], ['Another company’s data', 34], ['Unknown tool or field', 29], ['Client revoked', 16]];
+  return xBand(
+    xCard('Every request today', 'what Glass did with it', `<div class="xgauge">${xRing(out, '12.4k', 'requests')}<div class="xrows">${out.map(([k, v, c]) => `<div class="xrow"><i style="background:${c}"></i><span>${k}</span><strong>${fmt(v)}</strong></div>`).join('')}</div></div>`),
+    xCard('Requests by hour', 'today', vBars(hrs, [{n: 'Requests', v: per, c: 'var(--royal)'}], {every: 3, alt: 'Requests each hour'})),
+    xCard('Why requests were refused', 'today', xH(why.map(([k, v]) => [k, v, 'var(--bad)']))));
+}
+function xvTrust() {
+  const blocked = [['Instructions hidden in data', 41], ['Retried action', 17], ['Data out through an AI', 12], ['Hidden record via a count', 9], ['Forged or replayed token', 8], ['Raise its own approval', 6], ['Self-approval', 5], ['Stale graph (held)', 4], ['Another company’s data', 3]];
+  const r = xSeed('trust'), v = xSer(r, 14, 3300, 400, .1);
+  return xBand(
+    xCard('Blocked or held this month', 'by threat · synthetic', xH(blocked.map(([k, n]) => [k, n, 'var(--bad)', `${n} attempts, 0 got through`]))),
+    xCard('Permanent record checks', 'entries re-verified each day', `${vBars(days, [{n: 'Entries verified', v, c: 'var(--royal)'}], {alt: 'Entries verified each day'})}${xMini([['Breaks found', '0'], ['Entries', '48,201'], ['Last check', 'Just now']])}`));
+}
+function xvLimits() {
+  const use = [['Hops per query', 50, '2 of 4'], ['Results per query', 38, '38 of 100'], ['Query time', 30, '0.6 of 2 s'], ['MCP requests a minute', 14, '41 of 300'], ['Response size', 7, '9 of 128 KB']];
+  return xBand(
+    xCard('Measured read latency', 'local proof · 50 reads at concurrency 4 · real numbers', `${vBars(['p50', 'p95', 'max'], [{n: 'Company A', v: [3478, 3525, 3528], c: 'var(--royal)'}, {n: 'Company B', v: [2399, 2440, 2451], c: '#3AA0E8'}], {fmt: v => fmt(v) + ' ms', fmtA: v => (v / 1000).toFixed(1) + ' s', alt: 'Measured latency for two synthetic companies'})}${xLeg([['Company A', 'var(--royal)'], ['Company B', '#3AA0E8']])}<p class="xnote" style="margin-top:4px">${ic('check', 13)}<span>All under the declared 6,000 ms bound, on a laptop, with every check on.</span></p>`),
+    xCard('How close typical work runs to each limit', 'share of the limit used · synthetic', xH(use.map(([k, p, t]) => [k, p, p > 45 ? '#E2A23B' : 'var(--royal)', t]), v => v + '%', 100)));
+}
+function xvTestLab() {
+  const layers = [['Logic', 1240], ['Contracts', 410], ['Agents (labelled cases)', 412], ['Screens', 417], ['Security', 322], ['Connectors', 186], ['End to end', 94], ['Resilience', 71]];
+  const r = xSeed('tl'), b = Array.from({length: 14}, (_, i) => '#' + (412 + i)), pass = b.map((_, i) => 3020 + i * 9 + Math.round(r() * 6)), fail = b.map((_, i) => [0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0][i]);
+  return xBand(
+    xCard('Checks in each layer', 'illustrative counts', xH(layers.map(([k, v], i) => [k, v, XC[i % XC.length]]), v => fmt(v))),
+    xCard('Every build', 'checks passed, and builds a failure blocked', `${vBars(b, [{n: 'Passed', v: pass, c: '#16B39A'}, {n: 'Failed', v: fail.map(f => f * 60), c: 'var(--bad)'}], {stack: true, fmt: v => fmt(v), alt: 'Checks passed in each build'})}${xMini([['Builds blocked', '2 of 14'], ['Attacks per build', '10'], ['Got through', '0']])}`));
+}
+function xvLoop() {
+  const r = xSeed('loop'), t0 = xSer(r, 14, 250, 25, .15), t1 = xSer(r, 14, 92, 12, .1), t2 = xSer(r, 14, 70, 10);
+  return xBand(
+    xCard('Loops each day', 'by who approved', `${vBars(days, [{n: 'Signed policy', v: t0, c: 'var(--royal)'}, {n: 'Verifier', v: t1, c: '#3AA0E8'}, {n: 'A person', v: t2, c: '#E2A23B'}], {stack: true, alt: 'Loops each day by approval'})}${xLeg([['Policy', 'var(--royal)'], ['Verifier', '#3AA0E8'], ['Person', '#E2A23B']])}`),
+    xCard('One loop, by hand and with Glass', 'no person needed', xPairs([['Notice the signal', 240, 1], ['Propose what to do', 360, 3], ['Approve', 1440, .3], ['Carry it out', 120, 1], ['Check the result', 1440, 4]], xDur)));
+}
+/* on engineering pages the band follows the page's main diagram rather than pushing it down */
+const xAfterCardWith = (h, needle) => { const k = h.indexOf(needle); if (k < 0) return -1; let c = -1; for (const m of h.slice(0, k).matchAll(/<div class="card(?: [^"]*)?">/g)) c = m.index; return xAfterBlock(h, c); };
+Object.assign(XPLACE, {
+  arch: h => xAfterCardWith(h, '<div class="arch-wrap">'),
+  trace: h => xAfterBlock(h, h.indexOf('<div class="grid g-side">')),
+  trust: h => xAfterCardWith(h, '<h2>Try to tamper with the record</h2>'),
+  limits: h => xAfterCardWith(h, '<h2>Hard limits</h2>'),
+  testlab: h => xAfterCardWith(h, '<h2>Nine layers of testing</h2>'),
+});
+Object.assign(XVIS, {arch: xvArch, trace: xvTrace, trust: xvTrust, limits: xvLimits, testlab: xvTestLab, loop: xvLoop});
+const xDur = m => m < 1 ? Math.round(m * 60) + ' s' : m < 60 ? Math.round(m) + ' min' : m < 1440 ? (m % 60 ? `${Math.floor(m / 60)} h ${Math.round(m % 60)} m` : `${m / 60} h`) : `${+(m / 1440).toFixed(m < 14400 ? 1 : 0)} day${m === 1440 ? '' : 's'}`;
+
+/* loop health: the loop that runs with no person in it */
+const XLOOP = [['signal', 1, '1 min'], ['propose', 3, '3 min'], ['approve', .3, '20 s'], ['act', 1, '1 min'], ['verify', 4, '4 min']];
+loopTime = function () {
+  return `<div class="section-t" style="margin-top:6px">Where the time goes, with no person needed</div><div class="x-tbar">${XLOOP.map(([k, m]) => `<i class="${k === S.loopSel ? 'on' : ''}" style="flex:${m}" title="${LOOP.find(x => x[0] === k)[1]} · ${XLOOP.find(x => x[0] === k)[2]}"></i>`).join('')}</div>
+    <div class="x-tleg">${XLOOP.map(([k, , t]) => `<span class="${k === S.loopSel ? 'on' : ''}"><b>${LOOP.find(x => x[0] === k)[1]}</b>${t}</span>`).join('')}</div>
+    <p class="sub">About 9 minutes end to end when a signed policy or the verifier approves, which is 83% of loops. The rest wait for a named person; that wait is tracked on Governance.</p>`;
+};
+vLoop = function () {
+  const sel = LOOP.find(s => s[0] === S.loopSel) || LOOP[5], n = LOOP.length, R = 150, cx = 230, cy = 190;
+  const pos = i => [cx + R * Math.cos(-Math.PI / 2 + i * 2 * Math.PI / n), cy + R * Math.sin(-Math.PI / 2 + i * 2 * Math.PI / n)];
+  const ring = `<svg viewBox="0 0 460 380" class="x-ring" role="group" aria-label="The loop: signal, propose, approve, act, check, learn">
+    <circle cx="${cx}" cy="${cy}" r="${R}" class="x-rc"/><circle cx="${cx}" cy="${cy}" r="${R}" class="x-rd"/>
+    ${LOOP.map(([k, t], i) => { const [x, y] = pos(i); return `<g class="x-rn${k === sel[0] ? ' on' : ''}" data-x="loop" data-a="${k}" role="button" tabindex="0"><circle cx="${x}" cy="${y}" r="38"/><text x="${x}" y="${y + 5}" text-anchor="middle">${t}</text></g>`; }).join('')}
+    <text x="${cx}" y="${cy - 6}" text-anchor="middle" class="x-rt">One loop</text><text x="${cx}" y="${cy + 20}" text-anchor="middle" class="x-rv">9 min</text></svg>`;
+  const ex = S.loopEx;
+  return `${head('Under the hood', 'Loop health', 'Every domain engine runs the same loop: notice, propose, approve, act, check the result and learn. Glass watches each stage, so you can see how fast work moves and whether the loop is getting better.')}
+  <div class="kpis"><div class="kpi"><span class="k">One loop, no person needed</span><span class="v">9 min</span><span class="d">signal to checked result</span></div><div class="kpi"><span class="k">The same loop by hand</span><span class="v">3.5 days</span><span class="d">notice, decide, do, check</span></div><div class="kpi"><span class="k">Ran without a person</span><span class="v">83%</span><span class="d">by policy or verifier, within limits</span></div><div class="kpi"><span class="k">Overrides</span><span class="v">3.1%</span><span class="d">people disagreed with the agent</span></div></div>
+  <div class="grid g-side">
+    <div class="card x15"><div class="card-h"><h2>Financial crime loop</h2>${st('sim')}<span class="sub">Click a stage</span></div><div class="card-b">${ring}</div></div>
+    <div class="card x15"><div class="card-h"><h2>${sel[1]}</h2><span class="sub">${sel[2]}</span></div><div class="card-b" style="display:grid;gap:10px">${sel[3].map(([k, v]) => `<div class="x-kv1"><span>${k}</span><b>${v}</b></div>`).join('')}
+      <p class="sub">${{signal: 'Signals come from the engine\'s rules, from sources changing, and from evidence going stale.', propose: 'An agent that is not sure says so and hands over. Abstaining is counted as healthy, not as failure.', approve: 'The tier comes from signed policy, never from the agent. Trust is earned and lost automatically.', act: 'Actions held at dispatch had evidence that changed after approval.', verify: 'Accepted for processing never counts as done.', learn: 'This is where the loop gets better. See the worked example below.'}[sel[0]]}</p>${loopTime()}</div></div>
+  </div>
+  <div class="card x15"><div class="card-h"><h2>Worked example: learning from overrides</h2>${st('sim')}<div style="display:flex;gap:8px;margin-left:auto"><button class="btn sm" type="button" data-x="loopEx" data-a="-1" ${ex === 0 ? 'disabled' : ''}>Back</button><button class="btn sm primary" type="button" data-x="loopEx" data-a="1" ${ex >= LOOP_EX.length - 1 ? 'disabled' : ''}>Next step</button></div></div><div class="card-b">
+    <div class="x-steps">${LOOP_EX.map(([t, d], i) => `<div class="x-step${i < ex ? ' done' : i === ex ? ' cur' : ''}"><i>${i < ex ? ic('check', 12, 3) : i + 1}</i><b>${t}</b>${i <= ex ? `<span>${d}</span>` : ''}</div>`).join('')}</div>
+  </div></div>
+  <p class="foot-note">Loop stages follow the Glass work, gateway and observability modules. Figures are synthetic. Every stage writes to the permanent record, and the independent monitor watches the queues.</p>`;
+};
+
+
+/* domain engines: the case as three lanes (agents work, Glass checks, people decide) with a clock against doing it by hand */
+const XLANES = [['ag', 'Agents do the work', 'bot'], ['gw', 'Glass checks every action', 'shield'], ['person', 'People decide what matters', 'hand']];
+const xLane = s => s[0] === 'gate' ? 1 : s[0] === 'person' ? 2 : 0;
+function xCaseT(steps) { return steps.map((s, i) => xLane(s) === 1 ? [.1, 60] : xLane(s) === 2 ? [25 + (i % 3) * 10, 1440 * (1 + i % 2)] : [2 + (i * 3) % 5, [240, 480, 1440, 360, 720][i % 5]]); }
+caseSteps = function (e) {
+  const steps = ecase(e).steps, n = steps.length, done = S.caseStep >= n, cur = Math.min(S.caseStep - 1, n - 1), upto = done ? n : Math.max(0, S.caseStep), T = xCaseT(steps);
+  const gT = xsum(T.slice(0, upto).map(t => t[0])), hT = xsum(T.slice(0, upto).map(t => t[1])), gAll = xsum(T.map(t => t[0])), hAll = xsum(T.map(t => t[1]));
+  const inits = w => w.split(/[\s·]+/).filter(x => /^[A-Z]/.test(x)).map(x => x[0]).join('').slice(0, 2) || w.slice(0, 2).toUpperCase();
+  const xs = i => (i + .5) / n * 100, ys = l => [17, 50, 81][l], pts = steps.map((s, i) => [xs(i) * 10, ys(xLane(s)) * 2.2]);
+  const line = ps => ps.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const lanes = `<div class="xc-lanes"><div class="xc-lh">${XLANES.map(([k, t, icn]) => `<span class="${k}">${ic(icn, 14)}${t}</span>`).join('')}</div>
+    <div class="xc-track"><svg viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true"><path d="${line(pts)}" class="xc-p0"/>${upto > 1 ? `<path d="${line(pts.slice(0, upto))}" class="xc-p1"/>` : ''}</svg>
+    ${steps.map((s, i) => { const l = xLane(s), state = done || i < cur ? 'done' : i === cur ? 'now' : ''; return `<button type="button" class="xc-n ${XLANES[l][0]} ${state}" style="left:${xs(i).toFixed(2)}%;top:${ys(l)}%" data-cstep="${i + 1}" aria-label="Step ${i + 1}: ${esc(s[1])}"><span class="d">${l === 1 ? ic('shield', 15) : l === 2 ? ic('hand', 15) : inits(s[1])}</span><span class="l">${i + 1}</span></button>`; }).join('')}</div></div>`;
+  const clocks = `<div class="xc-clocks"><div class="xc-clk"><span>With Glass</span><span class="tr"><i style="width:${Math.max(upto ? 1.2 : 0, gT / hAll * 100).toFixed(1)}%"></i></span><b>${upto ? xDur(gT) : '0 min'}</b></div><div class="xc-clk hand"><span>Same work by hand</span><span class="tr"><i style="width:${(hT / hAll * 100).toFixed(1)}%"></i></span><b>${upto ? xDur(hT) : '0 min'}</b></div></div>`;
+  const cnt = k => steps.filter(s => xLane(s) === k).length;
+  let card;
+  if (S.caseStep === 0) card = `<div class="xc-card idle"><span class="xc-big">${ic('play', 20)}</span><div><small>Ready</small><b>By hand, this case takes about ${xDur(hAll)}. Press Play to watch Glass handle it.</b><p>${cnt(0)} steps by agents, ${cnt(1)} check${cnt(1) === 1 ? '' : 's'} by Glass, ${cnt(2)} decision${cnt(2) === 1 ? '' : 's'} by a named person. Click any step to jump to it.</p></div></div>`;
+  else if (done) card = `<div class="xc-card fin"><span class="xc-big">${ic('check', 20, 2.6)}</span><div><small>Case closed</small><b>Done in ${xDur(gAll)} instead of about ${xDur(hAll)}.</b><p>${cnt(0)} steps by agents, ${cnt(1)} check${cnt(1) === 1 ? '' : 's'} by Glass, ${cnt(2) ? `${cnt(2)} decision${cnt(2) === 1 ? '' : 's'} by a named person` : 'no person needed'}. Every step, the evidence and the approval are in the permanent record.</p></div><div class="xc-x"><b>${Math.round(hAll / gAll)}×</b><span>faster</span></div></div>`;
+  else { const s = steps[cur], l = xLane(s); card = `<div class="xc-card ${XLANES[l][0]}"><span class="xc-big">${ic(XLANES[l][2], 20)}</span><div><small>Step ${cur + 1} of ${n} · ${esc(s[1])} · ${XLANES[l][1].toLowerCase()}</small><b>${s[2]}</b><p>${s[3]}</p>${s[4].length ? `<div class="chips"><span class="xc-k">Looked at</span>${s[4].map(c => `<span class="chip">${c}</span>`).join('')}</div>` : ''}</div><div class="xc-t"><span><small>With Glass</small><b>${xDur(T[cur][0])}</b></span><span><small>By hand</small><b>${xDur(T[cur][1])}</b></span></div></div>`; }
+  const nav = `<div class="xc-nav"><button class="btn sm" type="button" data-cnav="-1"${S.caseStep <= 0 ? ' disabled' : ''}>Back</button><span class="sub">${done ? 'All steps' : S.caseStep ? `Step ${S.caseStep} of ${n}` : `${n} steps`}</span><button class="btn sm" type="button" data-cnav="1"${done ? ' disabled' : ''}>Next</button></div>`;
+  return clocks + lanes + card + nav;
+};
+play = function () {
+  const e = ENGINES.find(x => x.id === S.engine); stopPlay();
+  if (S.caseStep >= ecase(e).steps.length) S.caseStep = 0;
+  const step = () => { if (S.paused) return; S.caseStep++; const t = $('#timeline'); if (t) t.innerHTML = brand(caseSteps(e)); if (S.caseStep >= ecase(e).steps.length) { stopPlay(); render(); } };
+  step(); S.playing = setInterval(step, matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : 2600);
+  const b = document.querySelector('[data-play]'); if (b) b.innerHTML = ic('play', 12) + 'Playing…';
+};
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-cstep],[data-cnav]'); if (!t || t.disabled) return;
+  const en = ENGINES.find(x => x.id === S.engine), n = ecase(en).steps.length; stopPlay();
+  S.caseStep = t.dataset.cstep ? +t.dataset.cstep : Math.max(0, Math.min(n, S.caseStep + +t.dataset.cnav));
+  const tl = $('#timeline'); if (tl) tl.innerHTML = brand(caseSteps(en));
+  const b = document.querySelector('[data-play]'); if (b) b.innerHTML = ic('play', 12) + (S.caseStep >= n ? 'Replay' : 'Play');
+});
+
+/* long pages: group the lower sections into tabs, so nothing is lost but less is on screen at once */
+const XTABS = {library: [['Problems and how each was resolved', 'Problems'], ['Resolved by Glass agents this week', 'Resolved this week'], ['How it gets better', 'Getting better'], ['Always watching', 'Monitors'], ['Where the library sits', 'Where it sits'], ['The documents behind', 'Documents']]};
+S.xtab = S.xtab || {};
+function xTabify() {
+  const cfg = XTABS[S.route], v = $('#view'); if (!cfg || !v) return;
+  const groups = [];
+  [...v.children].forEach(k => { const h = k.querySelector('h2'), t = h && h.textContent.trim(), m = t && cfg.find(x => t.startsWith(x[0])); if (m && !groups.some(g => g[1] === k)) groups.push([m[1], k]); });
+  if (groups.length < 2) return;
+  const sel = Math.min(S.xtab[S.route] || 0, groups.length - 1), bar = document.createElement('div');
+  bar.className = 'xtabs'; bar.setAttribute('role', 'tablist');
+  bar.innerHTML = groups.map(([l], i) => `<button type="button" role="tab" aria-selected="${i === sel}" class="${i === sel ? 'on' : ''}" data-xtab="${i}">${l}</button>`).join('');
+  groups[0][1].before(bar);
+  groups.forEach(([, el], i) => { el.hidden = i !== sel; el.dataset.xtp = i; });
+}
+{ const _render = render; render = function (...a) { const out = _render.apply(this, a); try { xTabify(); } catch (err) { /* tabs are a convenience */ } return out; }; }
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-xtab]'); if (!t) return; const i = +t.dataset.xtab; S.xtab[S.route] = i;
+  t.parentElement.querySelectorAll('[data-xtab]').forEach(b => { b.classList.toggle('on', b === t); b.setAttribute('aria-selected', b === t); });
+  document.querySelectorAll('#view [data-xtp]').forEach(el => { el.hidden = +el.dataset.xtp !== i; });
+});
+
+/* wire the bands into the views (after every v22 change, so each page gets its band once) */
+for (const [k, f] of Object.entries(XVIS)) { const v = VIEWS[k]; if (v) VIEWS[k] = (...a) => xInsertBand(xDropCards(v(...a), XDROP[k] || []), f(), k); }
 for (const [k, v] of Object.entries(VIEWS)) if (!XVIS[k]) VIEWS[k] = (...a) => v(...a).replace('<!--xvis-->', '');
 
 const [start, startQs] = parseHash(); applyParams(start, startQs);
