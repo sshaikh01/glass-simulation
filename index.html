@@ -6788,7 +6788,7 @@ const RA_PILLARS = [
     ['val', 'Validation', '99.99% passed every gate', 'impl', 'quality', 'Every record is typed against its contract before Glass uses it. Failures are quarantined with a reason; nothing is fixed silently.', [99.97, 99.98, 99.99, 99.98, 99.99, 99.99, 99.99, 99.99], 'Records passing every gate, %'],
     ['lin', 'Lineage to source', '100% traced', 'impl', 'ontology', 'Each fact is a versioned claim that names the system, record and time it came from, so any answer can be traced back.', [100, 100, 100, 100, 100, 100, 100, 100], 'Facts traced to their source, %'],
     ['acc', 'Access controls', '386 refused this month', 'impl', 'trust', 'Each agent and person sees only its scope, down to the field. Anything else is refused and recorded.', [41, 52, 38, 47, 55, 44, 61, 48], 'Requests refused each week'],
-    ['res', 'Data residency', 'one region, no copies outside', 'sim', 'arch', 'Glass runs in the region the company chooses, with its stores, logs and model calls. In this demo the region is simulated.', [0, 0, 0, 0, 0, 0, 0, 0], 'Copies outside the region'],
+    ['res', 'Data residency', 'one region, no copies outside', 'sim', 'arch', 'Glass runs in the region the company chooses, with its stores, logs and model calls. For myZoi that means OpenAI models with UAE data residency. In this demo the region is simulated.', [0, 0, 0, 0, 0, 0, 0, 0], 'Copies outside the region'],
     ['min', 'Data minimisation', 'field-level scope per agent', 'impl', 'agents', 'Agents get only the fields their task needs. The Board Pack Writer, for example, sees certified totals and no customer records.', [12, 12, 11, 11, 10, 10, 9, 9], 'Average fields an agent can read'],
     ['ret', 'Retention rules', '7 rules · 0 overdue', 'sim', 'governance', 'Each kind of record has a retention rule with an owner. Records past their date are flagged for deletion by a person.', [0, 1, 0, 0, 2, 0, 0, 0], 'Records past their date'],
   ]},
@@ -6848,6 +6848,7 @@ function raFairBody() {
 /* the agent register */
 const RA_VER = {cco: ['2.3', 'Claude, most capable', '12 Oct'], comp: ['3.1', 'Claude, faster', '9 Oct'], fin: ['1.8', 'Claude, most capable', '2 Oct'], rec: ['2.0', 'Claude, faster', '27 Sep'], ev: ['1.4', 'Claude, most capable', '12 Oct'], ops: ['1.2', 'Claude, faster', '18 Sep'], ctrl: ['1.1', 'Claude, faster', '18 Sep'], board: ['0.9', 'Claude, most capable', '30 Sep']};
 const RA_TIER = {cco: 2, comp: 1, fin: 1, rec: 0, ev: 2, ops: 2, ctrl: 2, board: 2};
+const raModel = v => XMZ() ? 'OpenAI GPT-5.2 · UAE region' : v[1];
 const raTierTag = t => `<span class="tier t${t}">${t === 0 ? 'Tier 0' : t === 1 ? 'Tier 1' : 'Tier 2'}</span>`;
 
 function vRAI() {
@@ -6867,7 +6868,7 @@ function vRAI() {
       <div class="timeline ra-case">${RA_CASE.map(([pid, k, t, d], i) => `<div class="tl${S.ra.step >= i ? ' on' : ''}" id="raStep${i}"><span class="dot">${ic(S.ra.step >= i ? 'check' : RA_PILLARS.find(p => p.id === pid).ic, 14)}</span><div class="tl-b"><span class="who">${i + 1} · ${k}</span><b>${t}</b><span>${d}</span></div></div>`).join('')}</div>`)}
     <div id="raFair">${xCard('Fairness across customer groups', 'refunds approved, last 30 days', `<div id="raFairBody">${raFairBody()}</div>`, '', 'ra:fairness')}</div>
   </div>
-  ${xCard('Agent register', `${AGENTS.length} agents · click a row`, `<div class="tbl-wrap"><table class="tbl ra-reg"><tr><th>Agent</th><th>Version</th><th>Model</th><th>Owner</th><th>Autonomy</th><th class="r">Agrees with reviewers</th><th>Last change</th></tr>${AGENTS.map(a => { const v = RA_VER[a.id]; return `<tr class="click" data-xd="ragent:${a.id}"><td><b>${a.name}</b></td><td class="mono">v${v[0]}</td><td>${v[1]}</td><td>${a.serves}</td><td>${raTierTag(RA_TIER[a.id])}</td><td class="r num">${a.ok}</td><td>${v[2]} · approved</td></tr>`; }).join('')}</table></div>`, '', 'ra:register')}
+  ${xCard('Agent register', `${AGENTS.length} agents · click a row`, `<div class="tbl-wrap"><table class="tbl ra-reg"><tr><th>Agent</th><th>Version</th><th>Model</th><th>Owner</th><th>Autonomy</th><th class="r">Agrees with reviewers</th><th>Last change</th></tr>${AGENTS.map(a => { const v = RA_VER[a.id]; return `<tr class="click" data-xd="ragent:${a.id}"><td><b>${a.name}</b></td><td class="mono">v${v[0]}</td><td>${raModel(v)}</td><td>${a.serves}</td><td>${raTierTag(RA_TIER[a.id])}</td><td class="r num">${a.ok}</td><td>${v[2]} · approved</td></tr>`; }).join('')}</table></div>`, '', 'ra:register')}
   <p class="foot-note">Synthetic data, shaped to show how Glass would report. Controls marked simulated are illustrations, not claims about ${CO[S.co].name}’s systems.</p>`;
 }
 
@@ -7025,7 +7026,7 @@ function raChipDrawer(pid, cid) {
 function raAgentDrawer(id) {
   const a = AGENTS.find(x => x.id === id), v = RA_VER[id]; if (!a) return;
   const hist = [[`v${v[0]}`, v[2], 'New prompt and tool limits; replayed on 30 days first', a.serves], [`v${(parseFloat(v[0]) - 0.1).toFixed(1)}`, '14 Sep', 'Model updated after provider review', 'Chief Technology Officer'], [`v${(parseFloat(v[0]) - 0.2).toFixed(1)}`, '20 Aug', 'Scope narrowed: no contact details', 'Data Protection Officer']];
-  xDr('Agent register', a.name, `Serves the ${a.serves} · ${a.eng}`, `${xT([['Version', `v${v[0]}`, v[1], 1], ['Autonomy', `Tier ${RA_TIER[id]}`, a.auto], ['Agrees with reviewers', a.ok, 'last 30 days']])}
+  xDr('Agent register', a.name, `Serves the ${a.serves} · ${a.eng}`, `${xT([['Version', `v${v[0]}`, raModel(v), 1], ['Autonomy', `Tier ${RA_TIER[id]}`, a.auto], ['Agrees with reviewers', a.ok, 'last 30 days']])}
     <div>${xS('Can read')}<div class="chips">${a.read.map(x => `<span class="chip blue">${ic('check', 11)}${x}</span>`).join('')}</div></div>
     <div>${xS('Cannot read')}<div class="chips">${a.no.map(x => `<span class="chip no">${x}</span>`).join('')}</div></div>
     <div>${xS('Change history', 'each approved by its owner')}${hist.map(([vv, d, t, by]) => `<div class="attr"><span><b class="mono">${vv}</b> · ${t}</span><span class="sub">${d} · ${by}</span></div>`).join('')}</div>
@@ -7261,6 +7262,36 @@ xDetail = k => {
     el.innerHTML = brand(gFeedRows()); const f = el.firstElementChild; if (f) f.classList.add('new');
   };
   gFeedTick = tick;
+}
+
+/* ---------- v28: in myZoi mode the AI provider is OpenAI with UAE data residency. Illustrative mentions change; statements about what the
+   runtime proof actually exercised say "two providers" rather than naming them, so they stay true. ---------- */
+{ const _brand = brand;
+  brand = html => {
+    const h = _brand(html);
+    if (S.co !== 'myzoi') return h;
+    return String(h)
+      .replace(/real Claude and ChatGPT sessions/g, 'real AI assistant sessions from two providers')
+      .replace(/Live Claude and ChatGPT sessions/g, 'Live AI assistant sessions from two providers')
+      .replace(/Real AI client sessions \(Claude, ChatGPT\)/g, 'Real AI client sessions (two providers)')
+      .replace(/<span class="av">CL<\/span><div><b>Claude<\/b>/g, '<span class="av">GP</span><div><b>ChatGPT</b>')
+      .replace(/<span class="av">GP<\/span><div><b>ChatGPT<\/b><span>Compliance/g, '<span class="av">CP</span><div><b>Microsoft Copilot</b><span>Compliance')
+      .replace(/ChatGPT via MCP/g, 'Copilot via MCP')
+      .replace(/Claude via MCP/g, 'ChatGPT via MCP')
+      .replace(/AI assistants such as Claude and ChatGPT/g, 'AI assistants such as ChatGPT and Microsoft Copilot')
+      .replace(/A session in Claude/g, 'A session in ChatGPT')
+      .replace(/Claude \(Finance team\)/g, 'ChatGPT (Finance team)')
+      .replace(/(?<![(\w])Claude, ChatGPT(?!\))/g, 'ChatGPT, Copilot')
+      .replace(/\bClaude(?='s|’s| signs| MCP| client| access| asks| calls)/g, 'ChatGPT')
+      .replace(/<small>Model<\/small><b style="font-size:15px">Claude<\/b>/g, '<small>Model</small><b style="font-size:15px">OpenAI GPT-5.2</b>');
+  };
+}
+/* The architecture tooltips are set straight from ACMP, so they go through brand() here too. */
+{ const _enhance = enhance;
+  enhance = root => {
+    _enhance(root);
+    if (S.co === 'myzoi') root.querySelectorAll('#archSvg .cmp[data-tip]').forEach(el => { const t = brand(el.dataset.tip); if (t !== el.dataset.tip) el.dataset.tip = t; });
+  };
 }
 
 const [start, startQs] = parseHash(); applyParams(start, startQs);
