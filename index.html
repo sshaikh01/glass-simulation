@@ -2108,6 +2108,38 @@ button.xbp:hover { border-color: var(--royal-200); }
 @media (max-width: 900px) { .ra-row { grid-template-columns: minmax(0, 1fr); } .ra-arrow { display: none; } }
 @media (max-width: 700px) { .g-pipe, .g-loop { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ra-provides { grid-template-columns: minmax(0, 1fr); } .g-attack, .ra-case-top { flex-direction: column; align-items: flex-start; } .ra-slider input { width: 100px; } .ra-fig { display: none; } .ra-di { grid-template-columns: auto minmax(0, 1fr) 14px; } .g-prop { grid-template-columns: minmax(0, 1fr) 14px; } .g-prop .pill { grid-column: 1 / -1; } }
 @media print { .ra-slider, [data-ra="play"], [data-ra="run"], [data-ra^="pause"] { display: none; } }
+
+/* v27: stop controls */
+.g-lvls { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.g-lvl { display: grid; gap: 6px; align-content: start; border: 1px solid var(--line); border-radius: 12px; padding: 12px; min-width: 0; }
+.g-lvl.off { border-color: var(--bad); }
+.g-lvl-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.g-lvl-h b { font-size: 14px; }
+.g-lvl > small { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.g-lvl .xdet { justify-self: start; margin-top: 2px; }
+.g-big { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 0 4px; }
+.g-srows { display: grid; gap: 4px; margin-top: 4px; }
+.g-srow { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+.g-srow:last-child { border-bottom: 0; }
+.g-srow b { display: block; font-size: 12.5px; }
+.g-srow small { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+.g-srow.off b { color: var(--bad); }
+.g-sd { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+.g-sd.ok { background: var(--good); } .g-sd.bad { background: var(--bad); } .g-sd.unk { background: var(--unk); }
+.g-confirm { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; font-size: 11.5px; color: var(--ink2); font-weight: 600; max-width: 260px; text-align: right; }
+.g-trips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.g-trip { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 11px; padding: 8px 10px; }
+.g-trip.on { border-color: var(--bad); }
+.g-trip-b { display: grid; grid-template-columns: 10px minmax(0, 1fr); gap: 9px; align-items: center; text-align: left; border: 0; background: none; padding: 0; min-width: 0; }
+.g-trip-b b { display: block; font-size: 12.5px; }
+.g-trip-b small { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+.g-log td { white-space: nowrap; }
+@media (max-width: 1100px) { .g-lvls { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .g-trips { grid-template-columns: minmax(0, 1fr); } .g-confirm { max-width: none; justify-content: flex-start; text-align: left; } .g-srow { grid-template-columns: 10px minmax(0, 1fr); } .g-srow > :last-child { grid-column: 2; justify-self: start; } }
+.g-what { display: grid; gap: 7px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+.g-what span { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink2); }
+.g-what svg { color: var(--muted); flex: none; }
+.g-log td.g-why { white-space: normal; min-width: 260px; }
 </style>
 <div class="app">
   <aside class="rail">
@@ -6766,7 +6798,7 @@ const RA_PILLARS = [
     ['vend', 'Vendor diligence', '2 AI providers reviewed', 'sim', 'limits', 'Each model provider is reviewed before use: where data goes, what is kept, and what happens if it is unavailable. Only approved models can be called.', [2, 2, 2, 2, 2, 2, 2, 2], 'Approved AI providers'],
     ['aud', 'Audit rights', 'tamper-evident record', 'impl', 'trust', 'Every change is a hash-chained event. An auditor can check the whole record and see any edit, deletion or reordering.', [11.2, 11.8, 12.1, 11.6, 12.4, 12.0, 12.3, 12.4], 'Events recorded each week, thousands'],
     ['ovr', 'Override', 'any decision, any time', 'impl', 'governance', 'A person can reject or reverse any proposal. Separation of duties is enforced: requesters cannot approve their own.', [9, 7, 11, 8, 10, 6, 9, 8], 'Proposals rejected by a person'],
-    ['stop', 'Stop and fallback', 'one click, all agents', 'impl', 'governance', 'An emergency stop halts every agent action at once. Open work goes back to people, and resuming needs a different person.', [0, 0, 0, 0, 1, 0, 0, 0], 'Stops used'],
+    ['stop', 'Stop and fallback', 'all of Glass, an app or an agent', 'impl', 'guard', 'A person can stop all of Glass, one application or one agent in one click, and owner-set trip-wires stop them automatically. Open work goes back to people, and resuming needs a different person. The company-wide stop is in the Glass runtime; the narrower stops and trip-wires are simulated.', [0, 0, 0, 0, 1, 0, 0, 0], 'Stops used'],
   ]},
 ];
 const raName = c => c[0] === 'res' && XMZ() ? 'UAE residency' : c[1];
@@ -6947,7 +6979,7 @@ function vGuard() {
   gFeedSeed();
   const ref = xsum(G_CHECKS.map(c => c[6])), held = xsum(G_CHECKS.map(c => c[5])), lvl = gLevel();
   return `${head('Under the hood', 'Agents at runtime: guarded, watched and corrected', 'Every agent action passes the same checks before anything happens, attacks are assumed and contained, and guardrails tighten on their own when an agent drifts. Learning can suggest a better policy, but only a person can sign it, and the gateway enforces only signed policy.')}
-  ${xBrief(`This month <b>${fmt(S.actions)}</b> agent actions passed the gateway. <b>${fmt(ref)}</b> were refused and <b>${fmt(held)}</b> held for a person. No injected instruction or export attempt had any effect.`, [
+  ${xBrief(`This month <b>${fmt(S.actions)}</b> agent actions passed the gateway. <b>${fmt(ref)}</b> were refused and <b>${fmt(held)}</b> held for a person. No injected instruction or export attempt had any effect. A person can stop all of Glass, one application or one agent in one click, and trip-wires on data stop them on their own.`, [
     ['shield', 'Checks', `Seven checks on every action, from scope to the permanent record. <b>${G_CHECKS.filter(c => c[3] === 'impl').length} of 7</b> run in the Glass runtime today.`, 'g:checks'],
     ['alert', 'Attacks', '<b>37</b> injected instructions and <b>9</b> export attempts, all with zero effect.', 'g:attacks'],
     ['eye', 'Drift', `<b>1</b> alert this month, handled by tightening on its own. Complaints Handler is ${lvl ? (lvl === 2 ? 'red' : 'amber') : 'within its band'} now.`, 'g:drift'],
@@ -6960,6 +6992,7 @@ function vGuard() {
     ${xKpi('Export attempts', '9', 'all refused', {xd: 'g:attacks'})}
     ${xKpi('Drift alerts', lvl ? '2' : '1', `guardrails tightened on their own`, {xd: 'g:drift'})}
   </div>
+  ${gStopHtml()}
   ${xCard('Every action passes the same checks', 'this month · live feed', `<div class="g-pipe">${G_CHECKS.map(([id, n, d, k, pass, hold, refuse], i) => `<button class="g-check" type="button" data-xd="gcheck:${id}"><span class="g-n">${i + 1}</span><b>${n}</b><small>${d}</small><span class="g-c">${refuse ? `<span class="bad-t">${fmt(refuse)} refused</span>` : ''}${hold ? `<span class="warn-t">${fmt(hold)} held</span>` : ''}${!refuse && !hold ? '<span class="ok-t">all passed</span>' : ''}</span>${raStatus(k)}</button>`).join('')}</div>
     <div class="xleg ra-leg"><span>${raStatus('impl')}In the Glass runtime</span><span>${raStatus('sim')}Simulated in this demo</span></div>
     <div class="section-t" style="margin-top:14px">Live</div><div class="feed g-feed" id="gFeed">${gFeedRows()}</div>`, '', 'g:checks')}
@@ -6971,8 +7004,8 @@ function vGuard() {
     <div class="section-t" style="margin-top:16px">Proposed changes</div>
     <div class="g-props">${G_PROPS.map(([id, t, from, rep, s0]) => { const s = S.ra.props[id] || s0; return `<button class="g-prop" type="button" data-xd="gprop:${id}"><span class="pill ${s === 'ok' ? 'ok' : s === 'no' ? 'bad' : 'warn'}">${s === 'ok' ? 'Signed' : s === 'no' ? 'Rejected' : 'Waiting'}</span><span><b>${t}</b><small>${from} · ${rep}</small></span>${ic('chevron', 14)}</button>`; }).join('')}</div>
     ${xNote('The learner is simulated in this demo. What runs in Glass today: the approval level comes only from owner-published policy, a proposal cannot carry its own level, incidents lower an agent\'s level and raising it needs a person.')}`, '', 'g:learn')}
-  ${xCard('Agents right now', 'click Pause to stop one agent', `<div class="tbl-wrap"><table class="tbl"><tr><th>Agent</th><th class="r">Calls a minute</th><th class="r">Outside scope today</th><th>Drift</th><th>Autonomy</th><th></th></tr>${AGENTS.map((a, i) => { const p = S.ra.paused[a.id], dl = a.id === 'comp' ? lvl : a.id === 'fin' ? 1 : 0, t = p ? 2 : a.id === 'comp' ? Math.max(RA_TIER.comp, lvl ? 2 : 1) : a.id === 'fin' ? 2 : RA_TIER[a.id];
-      return `<tr><td><b>${a.name}</b>${p ? '<span class="muted-i">Paused · open work moved to people</span>' : ''}</td><td class="r num">${p ? 0 : [4, 21, 3, 38, 12, 1, 1, 0][i]} <span class="sub">/ ${dl === 2 ? 60 : 300}</span></td><td class="r num">${[0, 2, 1, 0, 0, 0, 0, 0][i]}</td><td><span class="pill ${dl === 2 ? 'bad' : dl ? 'warn' : 'ok'}">${dl === 2 ? 'Red' : dl ? 'Amber' : 'Normal'}</span></td><td>${raTierTag(t)}</td><td class="r"><button class="btn sm${p ? '' : ' danger'}" type="button" data-ra="pause:${a.id}">${p ? 'Resume' : 'Pause'}</button></td></tr>`; }).join('')}</table></div>`)}
+  ${xCard('Agents right now', 'stop one agent here or above', `<div class="tbl-wrap"><table class="tbl"><tr><th>Agent</th><th class="r">Calls a minute</th><th class="r">Outside scope today</th><th>Drift</th><th>Autonomy</th><th></th></tr>${AGENTS.map((a, i) => { const p = S.ra.paused[a.id], dl = a.id === 'comp' ? lvl : a.id === 'fin' ? 1 : 0, t = p ? 2 : a.id === 'comp' ? Math.max(RA_TIER.comp, lvl ? 2 : 1) : a.id === 'fin' ? 2 : RA_TIER[a.id];
+      return `<tr><td><b>${a.name}</b>${S.stopped ? '<span class="muted-i">Stopped with all of Glass</span>' : p ? `<span class="muted-i">Stopped · ${p.trip ? 'by a trip-wire' : 'by ' + p.by} · open work moved to people</span>` : ''}</td><td class="r num">${p || S.stopped ? 0 : [4, 21, 3, 38, 12, 1, 1, 0][i]} <span class="sub">/ ${dl === 2 ? 60 : 300}</span></td><td class="r num">${[0, 2, 1, 0, 0, 0, 0, 0][i]}</td><td><span class="pill ${dl === 2 ? 'bad' : dl ? 'warn' : 'ok'}">${dl === 2 ? 'Red' : dl ? 'Amber' : 'Normal'}</span></td><td>${raTierTag(t)}</td><td class="r">${gStopBtn('agent', a.id, p)}</td></tr>`; }).join('')}</table></div>`)}
   <p class="foot-note">Synthetic data, shaped to show how Glass would report. Controls marked simulated are illustrations, not claims about ${CO[S.co].name}’s systems.</p>`;
 }
 
@@ -7085,7 +7118,6 @@ document.addEventListener('click', e => {
   else if (k === 'lab') { S.ra.lab = a; S.ra.labStep = -1; clearInterval(gRun.h); const el = $('#gLab'); if (el) el.innerHTML = brand(gLabBody()); }
   else if (k === 'run') gRun();
   else if (k === 'scroll') { closeDrawer(); const el = $('#' + a); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }
-  else if (k === 'pause') { const ag = AGENTS.find(x => x.id === a); S.ra.paused[a] = !S.ra.paused[a]; raRepaint(); toast(S.ra.paused[a] ? `${ag.name} paused. Its open work moved to people; resuming needs a different person.` : `${ag.name} resumed by ${roleName()}.`); }
   else if (k === 'prop') { S.ra.props[a] = b; gPropDrawer(a); if (S.route === 'guard') raRepaint(); toast(b === 'ok' ? 'Policy signed. The gateway enforces it from the next action.' : b === 'no' ? 'Proposal rejected. Nothing changes.' : 'Back to waiting.'); }
 });
 document.addEventListener('input', e => {
@@ -7095,13 +7127,141 @@ document.addEventListener('input', e => {
   if (t.dataset.rain === 'drift') { S.ra.drift = v; const el = $('#gDrift'); if (el) { el.innerHTML = brand(gDriftBody()); const s = el.querySelector('[data-rain="drift"]'); if (s) s.focus(); } }
 });
 /* the live feed on Agent guardrails adds an action every few seconds */
-setInterval(() => {
+let gFeedTick = () => {
   if (document.hidden || S.present || S.paused || S.route !== 'guard') return;
   const el = $('#gFeed'); if (!el) return;
   const r = G_FEED[Math.floor(Math.random() * G_FEED.length)];
   S.ra.feed.unshift([...r, new Date().toTimeString().slice(0, 8)]); S.ra.feed = S.ra.feed.slice(0, 8);
   el.innerHTML = brand(gFeedRows()); const f = el.firstElementChild; if (f) f.classList.add('new');
-}, 3600);
+};
+setInterval(() => gFeedTick(), 3600);
+
+/* ---------- v27: stop controls. All of Glass, one application or one agent, by a person or by a trip-wire on data; resuming always needs a different person ---------- */
+Object.assign(S.ra, {apps: {}, log: [], tripped: {}, confirm: null, glassStop: null});
+const G_APPS = [
+  ['claude', 'Claude via MCP', 'AI assistant', 'Compliance team', ['regfeed', 'policies']],
+  ['chatgpt', 'ChatGPT via MCP', 'AI assistant', 'Operations', ['wiki', 'jira']],
+  ['portal', 'Complaints workspace', 'Application', 'Complaints team', ['crm', 'complaints', 'processor']],
+  ['refapi', 'Partner refunds API', 'API client', 'Payments', ['ledger', 'processor']],
+  ['boardapp', 'Board pack app', 'Application', 'Company Secretary', ['ledger', 'complaints']],
+  ['jirasync', 'Work tracker sync', 'Event subscriber', 'Engineering', ['jira']],
+];
+/* owner-set rules: the signal, its limit, what it stops, and who owns the rule */
+const G_TRIPS = [
+  ['refunds', 'Refunds paid in the last hour', '$8,420', 'over $50,000', '$61,300', ['agent', 'comp'], 'Head of Complaints', [3.1, 4.2, 2.8, 5.0, 3.9, 6.1, 4.4, 8.4]],
+  ['stale', 'Card processor data age', '4 minutes', 'older than 6 hours', '6 h 12 min', ['apps', 'processor'], 'Head of Data', [3, 4, 2, 5, 3, 4, 6, 4]],
+  ['refused', 'Refused actions from one agent in 10 minutes', '2', 'more than 20', '27', ['agent', 'fin'], 'Head of Risk', [1, 0, 2, 1, 3, 1, 0, 2]],
+  ['export', 'Export attempts from one application in an hour', '0', 'more than 3', '5', ['app', 'chatgpt'], 'Data Protection Officer', [0, 0, 1, 0, 0, 0, 0, 0]],
+  ['fair', 'A customer group outside the fairness band', '0 hours', 'for 24 hours', '26 hours', ['agent', 'comp'], 'Model risk owner', [0, 0, 0, 0, 0, 0, 0, 0]],
+  ['chain', 'The permanent record fails its check', 'intact', 'any failure', 'failed at #48,207', ['glass'], 'Chief Technology Officer', [0, 0, 0, 0, 0, 0, 0, 0]],
+];
+const gBy = () => S.role === 'presenter' ? 'Head of Operations' : ROLES[S.role].n;
+const gOther = by => by === 'Head of Risk' ? 'Chief Compliance Officer' : 'Head of Risk';
+const gCanStop = lvl => lvl === 'glass' ? !!ROLES[S.role].stop : ['presenter', 'cco', 'complaints'].includes(S.role);
+const gTime = () => new Date().toTimeString().slice(0, 5);
+const gName = (lvl, id) => lvl === 'glass' ? 'All of Glass' : lvl === 'app' ? G_APPS.find(x => x[0] === id)[1] : AGENTS.find(x => x.id === id).name;
+const gStore = lvl => lvl === 'app' ? S.ra.apps : S.ra.paused;
+const gIsStopped = (lvl, id) => lvl === 'glass' ? S.stopped : !!gStore(lvl)[id];
+function gStopBtn(lvl, id, cur) {
+  const key = `${lvl}:${id || ''}`, on = lvl === 'glass' ? S.stopped : !!cur;
+  if (S.ra.confirm === key) return `<span class="g-confirm">${on ? `Resume needs a different person from ${(lvl === 'glass' ? S.ra.glassStop : cur)?.by || 'whoever stopped it'}.` : 'Stop now? Recorded under your name.'}<button class="btn sm ${on ? 'primary' : 'danger'}" type="button" data-gs="${on ? 'resume' : 'stop'}:${key}">${on ? `Approve as ${gOther((lvl === 'glass' ? S.ra.glassStop : cur)?.by)}` : 'Stop'}</button><button class="btn sm" type="button" data-gs="cancel:${key}">Cancel</button></span>`;
+  if (!gCanStop(lvl)) return `<span class="sub">${on ? 'Stopped' : 'Your role cannot stop this'}</span>`;
+  return `<button class="btn sm${on ? '' : ' danger'}" type="button" data-gs="ask:${key}">${on ? 'Resume' : 'Stop'}</button>`;
+}
+function gDo(action, lvl, id, by = gBy(), why = 'Stopped by a person') {
+  const name = gName(lvl, id), held = lvl === 'glass' ? 214 : lvl === 'app' ? 18 + (id || '').length * 3 : 7 + (id || '').length * 2;
+  if (action === 'stop') {
+    const rec = {by, why, at: gTime(), trip: by.startsWith('Trip-wire')};
+    if (lvl === 'glass') { S.stopped = true; S.ra.glassStop = rec; setLive(); bump(['Gateway', `Emergency stop: all agent actions paused · ${by}`, 'bad']); }
+    else gStore(lvl)[id] = rec;
+    S.ra.log.unshift({at: rec.at, what: name, lvl, by, why, held, resumed: ''});
+  } else {
+    const cur = lvl === 'glass' ? S.ra.glassStop : gStore(lvl)[id], who = gOther(cur?.by);
+    if (lvl === 'glass') { S.stopped = false; S.ra.glassStop = null; setLive(); bump(['Gateway', `Agent actions resumed by the ${who}`, '']); } else delete gStore(lvl)[id];
+    const row = S.ra.log.find(r => r.what === name && !r.resumed); if (row) row.resumed = `${who} · ${gTime()}`;
+    return who;
+  }
+}
+function gStopHtml() {
+  const agentsOff = AGENTS.filter(a => S.ra.paused[a.id]).length, appsOff = G_APPS.filter(a => S.ra.apps[a[0]]).length;
+  const lvl = (k, t, d, st0, body) => `<div class="g-lvl${k === 'glass' && S.stopped ? ' off' : ''}"><div class="g-lvl-h"><b>${t}</b>${st(st0)}</div><small>${d}</small>${body}<button class="xdet" type="button" data-xd="gstop:${k}">What happens${ic('chevron', 11)}</button></div>`;
+  const row = (lv, id, name, sub, cur) => `<div class="g-srow${cur || (S.stopped && lv !== 'glass') ? ' off' : ''}"><span class="g-sd ${cur ? 'bad' : S.stopped ? 'unk' : 'ok'}"></span><span><b>${name}</b><small>${cur ? `Stopped ${cur.at} · ${cur.trip ? cur.by : 'by ' + cur.by}` : S.stopped ? 'Held: all of Glass is stopped' : sub}</small></span>${gStopBtn(lv, id, cur)}</div>`;
+  const trips = G_TRIPS.map(([id, n, now, lim, over, [lv, tid], owner]) => { const on = S.ra.tripped[id], tgt = lv === 'glass' ? 'all of Glass' : lv === 'apps' ? 'apps that rely on it' : lv === 'app' ? G_APPS.find(x => x[0] === tid)[1] : AGENTS.find(x => x.id === tid).name;
+    return `<div class="g-trip${on ? ' on' : ''}"><button class="g-trip-b" type="button" data-xd="gtw:${id}"><span class="g-sd ${on ? 'bad' : 'ok'}"></span><span><b>${n}</b><small>${on ? `<span class="bad-t">${over}</span>` : now} · limit ${lim} · stops ${tgt}</small></span></button>${on ? '<span class="pill bad">Tripped</span>' : `<button class="btn sm" type="button" data-gs="trip:${id}">Trip it</button>`}</div>`; }).join('');
+  const log = S.ra.log.length ? `<div class="tbl-wrap"><table class="tbl g-log"><tr><th>Time</th><th>What stopped</th><th>By, and why</th><th class="r">Work held</th><th>Resumed</th></tr>${S.ra.log.map(r => `<tr><td class="mono">${r.at}</td><td><b>${r.what}</b></td><td class="g-why">${r.by}<span class="muted-i">${r.why}</span></td><td class="r num">${r.held}</td><td>${r.resumed || '<span class="pill bad">Still stopped</span>'}</td></tr>`).join('')}</table></div>` : '<p class="sub">Nothing stopped yet. Stop something above, or trip a rule, and it is recorded here.</p>';
+  return `<div id="gStop">${xCard('Stop controls', S.stopped ? 'all of Glass is stopped' : `${agentsOff} agent${agentsOff === 1 ? '' : 's'} and ${appsOff} app${appsOff === 1 ? '' : 's'} stopped`, `
+    ${S.stopped ? `<div class="banner bad">${ic('alert', 16)}<span><b>All of Glass is stopped.</b> No agent action is carried out; open work is held for people. Stopped ${S.ra.glassStop ? `${S.ra.glassStop.at} · ${S.ra.glassStop.trip ? S.ra.glassStop.by : 'by ' + S.ra.glassStop.by}` : 'from Governance'}.</span></div>` : ''}
+    <div class="g-lvls">
+      ${lvl('glass', 'All of Glass', 'Every agent action and every change to a system, at once', 'impl', `<div class="g-big">${S.stopped ? `<span class="pill bad">Stopped</span>` : '<span class="pill ok">Running</span>'}${gStopBtn('glass', '', S.ra.glassStop)}</div>
+        <div class="g-what">${[['hand', 'Every agent proposal pauses'], ['lock', 'No change reaches any system'], ['users', 'Open work is held for people'], ['clock', 'Queued work is checked at the last moment'], ['user', 'A different person resumes']].map(([i, t]) => `<span>${ic(i, 13)}${t}</span>`).join('')}</div>`)}
+      ${lvl('app', 'One application', 'An app, API client or AI assistant; the others carry on', 'sim', `<div class="g-srows">${G_APPS.map(([id, n, kind, owner]) => row('app', id, n, `${kind} · ${owner}`, S.ra.apps[id])).join('')}</div>`)}
+      ${lvl('agent', 'One agent', 'Its proposals are refused; its open work goes to its team', 'sim', `<div class="g-srows">${AGENTS.map(a => row('agent', a.id, a.name, a.serves, S.ra.paused[a.id])).join('')}</div>`)}
+    </div>
+    <div class="section-t" style="margin-top:16px">Trip-wires on data <span class="xs-sub">set by each owner · stop things on their own</span></div>
+    <div class="g-trips">${trips}</div>
+    <div class="section-t" style="margin-top:16px">Stop log <span class="xs-sub">recorded in the permanent record</span></div>${log}
+    ${Object.keys(S.ra.tripped).length || S.ra.log.length ? `<div class="xbtns"><button class="btn sm" type="button" data-gs="reset:">Reset the stop demo</button></div>` : ''}`)}</div>`;
+}
+const gRepaint = () => { const y = window.scrollY; render(); window.scrollTo(0, y); };
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-gs]'); if (!t) return;
+  const [act, lvl, id] = t.dataset.gs.split(':');
+  if (act === 'ask') S.ra.confirm = `${lvl}:${id || ''}`;
+  else if (act === 'cancel') S.ra.confirm = null;
+  else if (act === 'stop') { S.ra.confirm = null; gDo('stop', lvl, id); toast(`${gName(lvl, id)} stopped. Open work moved to people; resuming needs a different person.`); }
+  else if (act === 'resume') { S.ra.confirm = null; const who = gDo('resume', lvl, id); toast(`${gName(lvl, id)} resumed, approved by the ${who}.`); }
+  else if (act === 'trip') {
+    const tw = G_TRIPS.find(x => x[0] === lvl); if (!tw) return;
+    if (t.closest('#drawer')) closeDrawer();
+    const [tid, n, , lim, over, [lv, target], owner] = tw, by = `Trip-wire: ${n.toLowerCase()}`, why = `${over}, limit ${lim} · rule owned by the ${owner}`;
+    S.ra.tripped[tid] = true;
+    if (lv === 'glass') { if (!S.stopped) gDo('stop', 'glass', '', by, why); }
+    else if (lv === 'apps') G_APPS.filter(a => a[4].includes(target)).forEach(a => { if (!S.ra.apps[a[0]]) gDo('stop', 'app', a[0], by, why); });
+    else if (!gStore(lv)[target]) gDo('stop', lv, target, by, why);
+    toast(`Trip-wire: ${n.toLowerCase()} (${over}). ${lv === 'glass' ? 'All of Glass' : lv === 'apps' ? 'The apps that rely on it' : gName(lv, target)} stopped on its own.`);
+  }
+  else if (act === 'reset') { if (S.stopped && S.ra.glassStop) { S.stopped = false; setLive(); } Object.assign(S.ra, {apps: {}, paused: {}, log: [], tripped: {}, confirm: null, glassStop: null}); toast('Stop demo reset.'); }
+  gRepaint();
+});
+Object.assign(XD, {
+  'gstop:glass'() { xDr('Stop controls', 'Stop all of Glass', 'The company-wide emergency stop', `<div>${st('impl')}</div>${xT([['Stops', 'everything', 'every agent action and change', 1], ['Takes effect', 'at once', 'checked at the last moment'], ['Resume', '2 people', 'stopper and approver differ']])}
+    <div>${xS('What happens')}${['Every agent proposal is paused and nothing is carried out.', 'Anything already queued is checked against the stop at the last moment, so nothing slips through.', 'Approvals given before the stop cannot be replayed after it.', 'Unclear outcomes are sorted out before anything resumes.', 'A different person approves the resume; both names are recorded.'].map(x => `<div class="attr"><span>${ic('check', 13)} ${x}</span></div>`).join('')}</div>
+    ${xBtns(xGo('Governance', 'governance', '', true))}`); },
+  'gstop:app'() { xDr('Stop controls', 'Stop one application', 'An app, API client or AI assistant', `<div>${st('sim')}</div>
+    <div>${xS('What happens')}${['Its calls are refused with a clear reason; other applications carry on.', 'Its users see that it is stopped, and why.', 'Anything it had proposed waits for a person.', 'A different person approves the resume.'].map(x => `<div class="attr"><span>${ic('check', 13)} ${x}</span></div>`).join('')}</div>
+    ${xNote('In the Glass runtime today an AI assistant\'s access can be revoked per person and per client. Stopping any application by name, as here, is simulated.')}`); },
+  'gstop:agent'() { xDr('Stop controls', 'Stop one agent', 'One role-based agent; the others carry on', `<div>${st('sim')}</div>
+    <div>${xS('What happens')}${['Its new proposals are refused at the gateway.', 'Its open work moves to the people queue of the team it serves.', 'Its read access stays, so people can see what it was doing.', 'A different person approves the resume, after reviewing why it stopped.'].map(x => `<div class="attr"><span>${ic('check', 13)} ${x}</span></div>`).join('')}</div>
+    ${xNote('In the Glass runtime today agents act only through proposals, and an incident lowers an agent\'s level so every action needs a person. A named per-agent stop, as here, is simulated.')}`); },
+});
+const _xDetail2 = xDetail;
+xDetail = k => {
+  if (k.startsWith('gtw:')) {
+    const tw = G_TRIPS.find(x => x[0] === k.slice(4)); if (!tw) return;
+    const [id, n, now, lim, over, [lv, target], owner, ser] = tw, on = S.ra.tripped[id];
+    const tgt = lv === 'glass' ? 'All of Glass' : lv === 'apps' ? `Apps that rely on it: ${G_APPS.filter(a => a[4].includes(target)).map(a => a[1]).join(', ')}` : gName(lv, target);
+    return xDr('Trip-wire', n, `Stops ${tgt.toLowerCase().startsWith('all') ? 'all of Glass' : tgt} when it goes ${lim}`, `${xT([['Now', on ? over : now, on ? 'tripped' : 'within the limit', 1], ['Limit', lim, ''], ['Owner', owner.replace(/^Chief Technology Officer$/, 'CTO'), 'sets and changes the rule']])}
+      <div>${xS('Last 8 hours')}${ser.some(v => v) ? xBars(['−7h', '−6h', '−5h', '−4h', '−3h', '−2h', '−1h', 'now'], [{n, v: ser, c: on ? 'var(--bad)' : 'var(--royal)'}], {...XDW, h: 160, alt: n}) : `<div class="ra-okline">${ic('check', 14)}Never near the limit in the last 8 hours.</div>`}</div>
+      <div>${xS('What it stops')}<div class="glass-says">${tgt}</div></div>
+      <div>${st('sim')}</div><p class="sub">Trip-wires are simulated in this demo. Glass already holds rather than guesses when data is stale, missing or broken; a trip-wire goes further and stops the agent, application or Glass. Only a person can resume it.</p>
+      ${on ? '' : `<div class="xbtns"><button class="btn danger" type="button" data-gs="trip:${id}">Trip it now</button></div>`}`);
+  }
+  return _xDetail2(k);
+};
+/* stops show in the live feed: anything stopped is refused there */
+{ const gActor = n => AGENTS.find(a => a.name === n);
+  const tick = () => {
+    if (document.hidden || S.present || S.paused || S.route !== 'guard') return;
+    const el = $('#gFeed'); if (!el) return;
+    const r = [...G_FEED[Math.floor(Math.random() * G_FEED.length)]], ag = gActor(r[0]), app = G_APPS.find(a => a[1] === r[0]);
+    if (S.stopped) { r[2] = 'REFUSE'; r[3] = 'All of Glass is stopped'; }
+    else if (ag && S.ra.paused[ag.id]) { r[2] = 'REFUSE'; r[3] = 'This agent is stopped · work moved to people'; }
+    else if (app && S.ra.apps[app[0]]) { r[2] = 'REFUSE'; r[3] = 'This application is stopped'; }
+    S.ra.feed.unshift([...r, new Date().toTimeString().slice(0, 8)]); S.ra.feed = S.ra.feed.slice(0, 8);
+    el.innerHTML = brand(gFeedRows()); const f = el.firstElementChild; if (f) f.classList.add('new');
+  };
+  gFeedTick = tick;
+}
 
 const [start, startQs] = parseHash(); applyParams(start, startQs);
 S.route = start;
